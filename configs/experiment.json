@@ -11,6 +11,6 @@
   "training_truth": "support only",
   "checkpoint_selection": "accuracy, then negative log-likelihood, on the checkpoint-selection validation subset",
   "query_truth": "final evaluation only during execution of the supplied runner",
-  "numerical_execution": "Slurm",
+  "numerical_execution": "Python; Slurm optional",
   "threads": {"torch": 2, "OMP_NUM_THREADS": 2, "MKL_NUM_THREADS": 2, "OPENBLAS_NUM_THREADS": 1}
 }

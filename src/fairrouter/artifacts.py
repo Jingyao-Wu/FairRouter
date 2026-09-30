@@ -2,7 +2,6 @@
 
 import hashlib
 import json
-import os
 
 from .privacy import ANONYMIZED_OBJECTS
 from pathlib import Path
@@ -10,11 +9,6 @@ from pathlib import Path
 DATASETS = ("cora", "citeseer", "pubmed", "arxiv", "ogbn-products")
 SHOTS = (3, 5, 10)
 SEEDS = (42, 43, 44)
-
-
-def require_slurm():
-    if not os.environ.get("SLURM_JOB_ID"):
-        raise RuntimeError("Numerical execution, including tests, requires Slurm")
 
 
 def sha256(path):
@@ -38,7 +32,6 @@ def write_json(path, value):
 
 
 def save_tensor(path, value):
-    require_slurm()
     import torch
 
     path = Path(path)
@@ -157,7 +150,6 @@ class Bundle:
         return self.authenticated(record["path"], digest)
 
     def tensor(self, digest):
-        require_slurm()
         import torch
 
         if digest in self.bank_overrides:

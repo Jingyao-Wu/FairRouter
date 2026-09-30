@@ -1,14 +1,9 @@
 """Fit routing estimators on equally weighted augmented support views."""
 from copy import deepcopy
-import os
 import numpy as np
 from eargtc.router_v8_v7_explore import core_v2 as historical
 DATASETS = ('cora', 'citeseer', 'pubmed', 'arxiv', 'ogbn-products')
 HEADS = ('agreement', 'trust', 'preference')
-
-def _slurm():
-    if not os.environ.get('SLURM_JOB_ID'):
-        raise RuntimeError('Numerical router fitting/prediction requires Slurm')
 
 def candidate_grid(dataset: str, head: str, stage='original') -> list[dict]:
     if dataset not in DATASETS or head not in HEADS:
@@ -33,7 +28,6 @@ def _check_bank(bank, dataset):
         raise ValueError('Training feature/sample lengths differ')
 
 def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
-    _slurm()
     if head not in HEADS or target not in DATASETS:
         raise ValueError((target, head))
     if set(banks) != set(DATASETS):
@@ -83,7 +77,6 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
     return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=mode, center=center, scale=scale, fit_ids=fitids, fit_audit=audit)
 
 def predict_candidate(model, bank) -> np.ndarray:
-    _slurm()
     x = historical.raw_features(bank, model['mode'])
     return np.asarray(historical.predict_estimator(model['estimator'], model['transform'].apply(x)), float).reshape(-1)
 

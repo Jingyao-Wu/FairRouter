@@ -4,15 +4,10 @@ import copy
 from collections import OrderedDict
 import hashlib
 import json
-import os
 DATASETS = ('cora', 'citeseer', 'pubmed', 'arxiv', 'ogbn-products')
 HEADS = ('trust', 'preference', 'agreement')
 _SOURCE_CACHE = OrderedDict()
 _SOURCE_CACHE_LIMIT = 32
-
-def _require_slurm():
-    if not os.environ.get('SLURM_JOB_ID'):
-        raise RuntimeError('Router fitting and prediction require Slurm')
 
 def _identity(dataset, head):
     if dataset not in DATASETS or head not in HEADS:
@@ -94,7 +89,6 @@ def _source_key(cfg, head, sources, banks):
 
 def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> dict:
     """Refit a recipe using training banks only; no validation argument exists."""
-    _require_slurm()
     _identity(target, head)
     cfg = copy.deepcopy(cfg)
     prepared = _prepare(banks, target, head)
@@ -155,7 +149,6 @@ def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> 
 
 def predict_candidate(model: dict, bank: dict):
     """Return raw disagreement logits or original agreement probability scores."""
-    _require_slurm()
     import numpy as np
     if model.get('schema') != 'router_aug_v6_candidate_v1':
         raise ValueError('Unknown fitted estimator schema')

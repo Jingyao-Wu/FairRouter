@@ -1,0 +1,29 @@
+{
+  "dataset": "pubmed",
+  "graph_sha256": "80794003c735974e9c2ed4fe8dd984d6f25f5f653da5a59ec087a81ec478529b",
+  "label_names": [
+    "Experimental",
+    "Diabetes Mellitus Type 1",
+    "Diabetes Mellitus Type 2"
+  ],
+  "prompt_suffix": "Question: Which of the following topic does this scientific publication talk about? Here are the 3 categories: Experimental, Diabetes Mellitus Type 1, Diabetes Mellitus Type 2. Reply only one category that you think this paper might belong to. Only reply the category name without any other words.\n\nCategory number options:\n1. Experimental\n2. Diabetes Mellitus Type 1\n3. Diabetes Mellitus Type 2\n\nReply only one category number from 1 to 3. Do not output the category name or any explanation words.\n\nAnswer: ",
+  "number_to_label_ids": [
+    0,
+    1,
+    2
+  ],
+  "number_token_ids": [
+    16,
+    17,
+    18
+  ],
+  "use_chat_template": true,
+  "max_length": 2048,
+  "add_special_tokens": true,
+  "dtype": "float16",
+  "batch_size": 1,
+  "padding_side": "left",
+  "truncation_side": "left",
+  "position_ids": "model_default",
+  "logit_projection": "full_sequence"
+}

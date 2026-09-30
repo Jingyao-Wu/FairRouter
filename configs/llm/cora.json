@@ -1,0 +1,41 @@
+{
+  "dataset": "cora",
+  "graph_sha256": "38e29c03bd0498e420e0267b4d59166e1453bc733c2e734c06cc71c0b22e0d14",
+  "label_names": [
+    "Rule_Learning",
+    "Neural_Networks",
+    "Case_Based",
+    "Genetic_Algorithms",
+    "Theory",
+    "Reinforcement_Learning",
+    "Probabilistic_Methods"
+  ],
+  "prompt_suffix": "Question: Which of the following sub-categories of AI does this paper belong to? Here are the 7 categories: Rule_Learning, Neural_Networks, Case_Based, Genetic_Algorithms, Theory, Reinforcement_Learning, Probabilistic_Methods. Reply only one category that you think this paper might belong to. Only reply the category phrase without any other explanation words.\n\nCategory number options:\n1. Rule_Learning\n2. Neural_Networks\n3. Case_Based\n4. Genetic_Algorithms\n5. Theory\n6. Reinforcement_Learning\n7. Probabilistic_Methods\n\nReply only one category number from 1 to 7. Do not output the category name or any explanation words.\n\nAnswer: ",
+  "number_to_label_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "number_token_ids": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
+  ],
+  "use_chat_template": true,
+  "max_length": 2048,
+  "add_special_tokens": true,
+  "dtype": "float16",
+  "batch_size": 1,
+  "padding_side": "left",
+  "truncation_side": "left",
+  "position_ids": "model_default",
+  "logit_projection": "full_sequence"
+}

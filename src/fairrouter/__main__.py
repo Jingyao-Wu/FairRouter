@@ -1,9 +1,9 @@
-"""Command line entry point. Import numerical libraries only inside Slurm."""
+"""Command line entry point for training, prediction and evaluation."""
 
 import argparse
 from pathlib import Path
 
-from .artifacts import DATASETS, SEEDS, SHOTS, require_slurm
+from .artifacts import DATASETS, SEEDS, SHOTS
 
 
 def main():
@@ -36,7 +36,6 @@ def main():
     verify = subparsers.add_parser("verify", help="Check the prepared data and model files")
     verify.add_argument("--bundle", type=Path, required=True)
     args = parser.parse_args()
-    require_slurm()
     if args.command == "run":
         from .pipeline import run_cell
 

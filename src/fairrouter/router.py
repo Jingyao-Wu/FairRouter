@@ -10,7 +10,7 @@ import numpy as np
 from scipy.special import expit, logit
 import torch
 
-from .artifacts import DATASETS, require_slurm
+from .artifacts import DATASETS
 
 FEATURE_KEYS = {"dataset", "ids", "tab", "g", "l", "gnn_pred", "llm_pred"}
 ENGINES = {
@@ -57,7 +57,6 @@ def raw(wrapped, bank):
 
 
 def predict_branch(bundle, bank):
-    require_slurm()
     if bundle.get("unavailable") or not len(bank["ids"]):
         n = len(bank["ids"])
         return dict(
@@ -161,7 +160,6 @@ def refit_branch(artifacts, cell, branch, deployed):
 
 def replay(artifacts, cell, upstream, *, refit=False):
     """Reconstruct every canonical Router tensor without reading test targets."""
-    require_slurm()
     split = artifacts.split(cell)
     count = split["num_nodes"]
     gp, lp = upstream["gnn_logits"].argmax(1), upstream["llm_logits"].argmax(1)

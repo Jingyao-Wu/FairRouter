@@ -11,12 +11,11 @@ from threadpoolctl import threadpool_limits
 from eargtc.multiseed_joint.experiment import prepare_arrays
 from eargtc.joint_cross_repair.artifacts import validate_hidden
 from . import training
-from .artifacts import Bundle, require_slurm, save_tensor, seal, sha256, write_json
+from .artifacts import Bundle, save_tensor, seal, sha256, write_json
 from .router import replay
 
 
 def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, expert_root=None):
-    require_slurm()
     torch.set_num_threads(2)
     artifacts = Bundle(bundle_root, bank_root=bank_root, expert_root=expert_root)
     cell = artifacts.cell(shot, seed, dataset)
@@ -94,7 +93,7 @@ def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, exp
         seconds=time.monotonic() - started,
         torch_version=str(torch.__version__),
         python_version=platform.python_version(),
-        slurm_job_id=os.environ["SLURM_JOB_ID"],
+        slurm_job_id=os.environ.get("SLURM_JOB_ID"),
     )
     write_json(destination / "audit.json", report)
     seal(destination, report)

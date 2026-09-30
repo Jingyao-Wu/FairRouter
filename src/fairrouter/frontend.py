@@ -19,7 +19,6 @@ from .artifacts import (
     SEEDS,
     SHOTS,
     read_json,
-    require_slurm,
     save_tensor,
     seal,
     sha256,
@@ -34,7 +33,6 @@ class Frontend:
         self.checked = set()
 
     def tensor(self, digest):
-        require_slurm()
         item = self.manifest["objects"][digest]
         path = (self.root / item["path"]).resolve()
         if not path.is_relative_to(self.root):
@@ -52,7 +50,6 @@ def positions(ids, wanted):
 
 
 def build_banks(bundle_root, frontend_root, output, shot, seed, dataset, expert_root=None):
-    require_slurm()
     torch.set_num_threads(2)
     artifacts, front = Bundle(bundle_root, expert_root=expert_root), Frontend(frontend_root)
     cell = artifacts.cell(shot, seed, dataset)
@@ -237,7 +234,7 @@ def build_banks(bundle_root, frontend_root, output, shot, seed, dataset, expert_
             objects=mapping,
             bundle_manifest_sha256=sha256(Path(bundle_root) / "manifest.json"),
             frontend_manifest_sha256=sha256(Path(frontend_root) / "frontend_manifest.json"),
-            slurm_job_id=os.environ["SLURM_JOB_ID"],
+            slurm_job_id=os.environ.get("SLURM_JOB_ID"),
         ),
     )
     print("BANKS FROZEN", shot, seed, dataset, max_error, flush=True)

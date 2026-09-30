@@ -16,7 +16,6 @@ from .artifacts import (
     SEEDS,
     SHOTS,
     read_json,
-    require_slurm,
     seal,
     sha256,
     verify_seal,
@@ -58,7 +57,6 @@ def write_csv(path, rows):
 
 
 def evaluate_run(bundle_root, run_root, output, reference_path=None, expert_root=None):
-    require_slurm()
     torch.set_num_threads(2)
     artifacts = Bundle(bundle_root, expert_root=expert_root)
     run_root, output = Path(run_root), Path(output)
@@ -82,7 +80,7 @@ def evaluate_run(bundle_root, run_root, output, reference_path=None, expert_root
     write_json(
         output / "EVALUATION_STARTED.json",
         dict(
-            models=sealed, bundle_sha256=expected_manifest, slurm_job_id=os.environ["SLURM_JOB_ID"]
+            models=sealed, bundle_sha256=expected_manifest, slurm_job_id=os.environ.get("SLURM_JOB_ID")
         ),
     )
     rows = []
@@ -238,7 +236,7 @@ def evaluate_run(bundle_root, run_root, output, reference_path=None, expert_root
             baseline_matches=baseline is not None,
             identical_llm_logits_across_all_shots_and_seeds=True,
             test_truth_after_all_models_frozen=True,
-            slurm_job_id=os.environ["SLURM_JOB_ID"],
+            slurm_job_id=os.environ.get("SLURM_JOB_ID"),
         ),
     )
     print("EVALUATION COMPLETE", output, flush=True)

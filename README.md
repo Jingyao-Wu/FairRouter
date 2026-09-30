@@ -33,17 +33,17 @@ python -m pip install -r requirements.txt
 python -m pip install --no-deps -e .
 ```
 
-The supplied commands require Slurm. Router and residual-classifier training run on CPU using prepared expert outputs and representations.
+Router and residual-classifier training run on CPU using prepared expert outputs and representations.
 
 ## Data preparation
 
 The main experiments use **Cora, Citeseer, PubMed, ogbn-arxiv and the ogbn-products subset**, with **3, 5 and 10 labels per class** and seeds **42, 43 and 44**. The default experts in the paper are a GCN and LLaMA3-8B.
 
-Data splits are generated locally from the preprocessed graph files using `scripts/make_splits.py`. Expert outputs, representations and model parameters are provided in a separate data/model package. Extract that package first:
+FairRouter consumes frozen expert probabilities and representations, in addition to graph data and few-shot splits. The prepared data/model package is the authenticated input to the benchmark runner. The expert reconstruction commands below are verified separately against that package. To use the prepared package, extract it with:
 
 ```bash
 mkdir -p data
-tar -xf /path/to/fairrouter-artifacts-v1-anonymous.tar -C data
+tar -xf /path/to/fairrouter-data.tar -C data
 ```
 
 This should create:
@@ -54,7 +54,7 @@ data/
 └── frontend/    Graph inputs and augmented expert representations
 ```
 
-**The data/model download link is not yet available.** Its release information is recorded in `configs/distribution.json`. The source code alone is insufficient to run the experiments. The package must include both directories above; raw benchmark downloads alone do not provide the required expert representations.
+**The prepared-package download link is not yet available.** Release information is recorded in [configs/distribution.json](configs/distribution.json). This approximately 24 GB package contains GNN class probabilities and 128-dimensional representations, LLaMA3-8B class probabilities and 4096-dimensional representations, augmented expert outputs, and model parameters. Expert reconstruction also needs the preprocessed graphs, node texts, class names, and local LLaMA3-8B-Instruct weights. Regenerated tensors are not automatically interchangeable with the package.
 
 ## Generate data splits
 
@@ -69,21 +69,23 @@ and `ogbn-products.pt` in `data/graphs/`. For Arxiv, also provide the official O
 time-split files `train.csv.gz`, `valid.csv.gz` and `test.csv.gz` in
 `data/ogbn_arxiv/split/time/`.
 
-Generate the splits on a CUDA GPU through Slurm:
+Generate the splits on a CUDA GPU:
 
 ```bash
-srun --partition="<gpu-partition>" --ntasks=1 --gres=gpu:1 --cpus-per-task=2 --mem=24G \
-  python scripts/make_splits.py \
+python scripts/make_splits.py \
   --data-root data/graphs \
   --arxiv-split-dir data/ogbn_arxiv/split/time \
   --datasets cora citeseer pubmed arxiv ogbn-products \
   --shots 3 5 10 --seeds 42 43 44 --device cuda:0 \
-  --output data/frozen/splits
+  --output splits
 ```
 
-This generates `data/frozen/splits/<shot>/<seed>/<dataset>.json`, the location
-used by the training command below. Each file contains the support, validation,
-query and evaluation node IDs. No separate download of split JSON files is needed.
+This generates `splits/<shot>/<seed>/<dataset>.json` and `splits/SHA256SUMS`.
+The JSON files are ignored by Git; the checksum manifest is retained. Verify it
+from the split directory with `sha256sum -c SHA256SUMS`.
+`evaluation_1000_ids` contains each shot's own query sample; `standard_eval_ids`
+contains the shared 10-shot evaluation set. Generating these files does not
+replace the prepared package's authenticated split files or manifest.
 
 The split protocol is unchanged:
 
@@ -96,57 +98,133 @@ The split protocol is unchanged:
 - **Evaluation:** sample 1,000 query nodes from the 10-shot partition for each
   dataset and seed, and reuse those IDs in the same order across all label budgets.
 
-`standard_eval_ids` stores the shared evaluation set used by the evaluator;
-`evaluation_1000_ids` stores the query sample for the individual label budget.
-The script also computes the 10-shot partition when only 3 or 5 shots are requested.
-CUDA sampling and the supplied seeds are required to reproduce the node IDs.
+Keep graph nodes, texts and splits in the same node order. CUDA sampling and the supplied seeds are required to reproduce the supplied split protocol.
 
-Use the graph files associated with the model package, preserving their node order
-and masks. The runner checks the generated splits against the package's expected
-identities. The script leaves identical existing files in place and refuses to
-replace different splits; generating JSON files alone does not adapt model inputs
-to a different graph or partition.
+## Reconstruct expert inputs
 
-## Running FairRouter
+Install `python -m pip install -e '.[experts]'`. Provide trusted PyG graph files,
+a JSON list of node texts in graph node order, and a JSON list of class names in
+numeric label order. Use the dataset-specific recipes in `configs/experts/` and
+prompt profiles in `configs/llm/`; the model directory must contain local
+LLaMA3-8B-Instruct weights and tokenizer files.
 
-From the repository root, activate the installed environment and set the partition available on your cluster:
+### GCN encoder and classification head
 
 ```bash
-export FAIRROUTER_PYTHON="$(command -v python)"
-export FAIRROUTER_PARTITION="<cpu-partition>"
-export FAIRROUTER_FRONTEND="$PWD/data/frontend"
-bash run.sh data/frozen outputs/main refit-all
+python -m fairrouter.pretrain_gnn \
+  --graph data/graphs/cora.pt --split splits/3/42/cora.json \
+  --labels data/labels/cora.json --recipe configs/experts/cora.json \
+  --encoder-checkpoint data/encoders/cora.pt \
+  --output data/generated/gnn/3/42/cora --device cuda:0
 ```
 
-This runs the five datasets at all three label budgets and seeds, followed by evaluation. Use a new output directory for each run. The modes are:
+`--encoder-checkpoint` accepts the hash-bound encoder-and-embeddings checkpoint
+specified by the recipe. Omit it to pretrain with the explicit dataset recipe.
+The objective contains masked-feature reconstruction and edge prediction;
+Cora, Citeseer, PubMed and Products also use view alignment and variance losses.
+The encoder seed and representations are shared across label budgets and split
+seeds. Head initialization seeds, class weights, widths and selection rules come
+from the per-cell recipe. The five 5-shot/seed42 cells require their fixed
+`--head-checkpoint`; the remaining cells refit the head.
 
-| Mode | Operation |
-| --- | --- |
-| `refit-all` | Train the configured router scorers and residual classifier; reuse the supplied calibration and acceptance settings. |
-| `refit-joint` | Use the supplied router and train the residual classifier. |
-| `replay` | Predict using the supplied router and residual-classifier parameters. |
+The raw graph container includes labels. Only support and validation labels are
+retained for head fitting and checkpoint selection; query labels are not used
+for training. This distinction is recorded in the output metadata.
 
-For one dataset and split:
+### LLM inference
 
 ```bash
-srun --partition="$FAIRROUTER_PARTITION" --ntasks=1 --cpus-per-task=2 --mem=24G \
-  python -m fairrouter run --bundle data/frozen --output outputs/cora_3shot \
-  --dataset cora --shot 3 --seed 42 --mode refit-joint
+python -m fairrouter.infer_llm \
+  --graph data/graphs/cora.pt --texts data/texts/cora.json \
+  --labels data/labels/cora.json --dataset cora \
+  --profile configs/llm/cora.json --model data/models/Llama-3-8B-Instruct \
+  --splits splits/3/42/cora.json --output data/generated/llm/cora --device auto
 ```
 
-Dataset arguments are `cora`, `citeseer`, `pubmed`, `arxiv` and `ogbn-products`. Omitting `FAIRROUTER_FRONTEND` from the main command uses the prepared routing features directly.
+Profiles specify the exact prompt suffix, category-token IDs, mapping back to
+class IDs, special-token handling and input length. Arxiv uses a nonidentity
+category-number mapping. Inference uses FP16, one prompt per batch and the final
+attended token's hidden state. Class logits retain the full-sequence vocabulary
+projection rather than changing the FP16 matrix multiplication shape. These
+settings are checked against the profile.
 
-The per-split residual-classifier settings are listed in `configs/cells/<shot>/<seed>/<dataset>.json`. The runner reads the matching settings from the data package; editing the JSON copies alone does not change a run. In these settings, `dim` is the projection dimension, `cross` is the disagreement-loss weight, `keep` is the agreement-preservation weight, and `aux` is a shared weight for the two auxiliary residual losses.
+Text views use 50% truncation, 30% token masking and 30% span deletion. Masking
+uses assignment seed 523; deletion uses seed 877; node seeds are
+`environment_seed * 1000003 + node_id`. Graph views use undirected-pair dropout
+with seed 101 and mixed ego-edge masking with seed 303. The clean LLM view covers
+all nodes. `--splits` restricts text augmentations to the union of their support
+nodes, so pass every split required for subsequent verification.
 
-## Evaluation
+Cache identity includes content hashes of model and tokenizer files, the prompt
+profile, library versions, GPU types and inference settings. Each completed
+shard has a checksum; changed
+shards are rejected on resume. New expert outputs are marked unverified until
+compared with the prepared package.
 
-The main command writes the following files to `outputs/main/evaluation/`:
+### Verify generated experts and use the benchmark runner
+
+```bash
+python -m fairrouter.generated verify \
+  --bundle data/frozen --frontend data/frontend \
+  --gnn data/generated/gnn/3/42/cora --llm data/generated/llm/cora \
+  --output outputs/cora_expert_verification.json
+
+python -m fairrouter.generated run \
+  --bundle data/frozen --frontend data/frontend \
+  --gnn data/generated/gnn/3/42/cora --llm data/generated/llm/cora \
+  --output outputs/main/cells --mode refit-all
+```
+
+Verification requires identical split IDs, clean expert tensors, supervision,
+graph views and support text views. Differences stop the command. Once verified,
+`run` delegates to the same authenticated package runner below: it uses the
+selected router estimators, their same-shot/same-seed source datasets, fixed
+calibration and acceptance settings, and the existing branch-wise validation
+partition. There is no separate logistic-router recipe or random validation
+split. This is a compatibility check followed by the package workflow; it is not
+a package-free end-to-end training entry point. Newly pretrained encoders or
+LLM inference on a different runtime may fail the exact comparison.
+
+## Running with the prepared package
+
+From the repository root, run FairRouter for one dataset and split:
+
+```bash
+python -m fairrouter run --bundle data/frozen --output outputs/example \
+  --dataset cora --shot 3 --seed 42 --mode refit-all
+```
+
+To train on all five datasets, three label budgets and three seeds:
+
+```bash
+for shot in 3 5 10; do
+  for seed in 42 43 44; do
+    for dataset in cora citeseer pubmed arxiv ogbn-products; do
+      python -m fairrouter run --bundle data/frozen --output outputs/main/cells \
+        --dataset "$dataset" --shot "$shot" --seed "$seed" --mode refit-all || exit 1
+    done
+  done
+done
+```
+
+The residual-classifier hyperparameters are documented in `configs/cells/<shot>/<seed>/<dataset>.json`.
+
+## Evaluation with the prepared package
+
+After training all datasets, label budgets and seeds, run:
+
+```bash
+python -m fairrouter evaluate --bundle data/frozen \
+  --run outputs/main/cells --output outputs/main/evaluation
+```
+
+Results are saved to `outputs/main/evaluation/`:
 
 - `per_seed.csv`: accuracy and Macro-F1 for each dataset, label budget and seed.
 - `summary.csv`: mean and standard deviation across seeds.
 - `REPORT.md`: an accuracy table for FairRouter and its GCN and zero-shot LLM experts.
 
-The evaluator uses the generated `standard_eval_ids`: the same ordered set of 1,000 evaluation nodes for every label budget of a dataset and seed. Accuracy summaries use population standard deviation. The expert scores produced here are not the complete baseline comparison in Table 1.
+Evaluation uses the same 1,000 nodes across label budgets for each dataset and seed. Accuracy summaries use population standard deviation.
 
 ## Results reported in the paper
 
@@ -160,19 +238,24 @@ The following values are transcribed from Table 1: node classification accuracy 
 
 ## Scope
 
-The supplied entry points cover the five-dataset, three-budget FairRouter experiments using prepared expert inputs. They do not include GNN encoder pretraining, LLM inference, the additional backbones, heterophilous benchmarks, or the full ablation suite.
+The benchmark runner covers the five datasets, three label budgets and three
+seeds using authenticated expert inputs. Expert reconstruction kernels and
+explicit recipes are supplied separately; a complete regeneration of all five
+datasets' expert caches has not been established as numerically identical.
+Raw data/text acquisition, LLaMA pretraining, additional backbones and the full
+ablation suite remain outside the supplied workflow.
 
 The evaluator's shared 1,000-node sets should not be equated with the full OGB test splits described in Appendix D.1. The residual trainer implements a shared auxiliary-loss coefficient; the independently weighted auxiliary losses, optional class weighting and fixed-fusion variant described in Appendix C.2 are not exposed by this trainer.
 
 ## Code structure
 
 ```text
-src/fairrouter/   Routing, residual classification, training and evaluation
+src/fairrouter/   Expert generation, routing, residual training and evaluation
 src/eargtc/       Evidence extractors and router estimators
 configs/         Per-split hyperparameters and data specifications
-scripts/         Data split generation and experiment submission
+scripts/         Data split generation and optional cluster submission
+tests/           Protocol, cache-integrity and computation tests
 paper/           Paper and method figure
-run.sh           Main experiment command
 ```
 
 ## Citation

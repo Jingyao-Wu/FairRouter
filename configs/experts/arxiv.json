@@ -1,0 +1,226 @@
+{
+  "dataset": "arxiv",
+  "graph_sha256": "1f55750ebc3990d88e272dd93d8e4b8432db60da5f0eddb7d2af4d470d3cf7ea",
+  "ssl": {
+    "align_weight": 0.0,
+    "edge_drop_rate": 0.1,
+    "edge_loss_weight": 0.5,
+    "embedding_dim": 128,
+    "feature_loss_weight": 1.0,
+    "feature_mask_rate": 0.3,
+    "gnn_dropout": 0.3,
+    "gnn_hidden_dim": 128,
+    "gnn_layers": 2,
+    "grad_clip": 5.0,
+    "log_every": 20,
+    "max_pos_edges": 50000,
+    "reconstruct_masked_only": true,
+    "seed": 42,
+    "ssl_epochs": 200,
+    "ssl_lr": 0.001,
+    "ssl_weight_decay": 0.0001,
+    "threads": 8,
+    "variance_weight": 0.0,
+    "view_edge_drop_rate": 0.0,
+    "view_feature_mask_rate": 0.0
+  },
+  "heads": [
+    {
+      "shot": 10,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": true
+    },
+    {
+      "shot": 5,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    }
+  ],
+  "encoder_checkpoint_sha256": "8650516b3a7ea0577051d313af86b1fc9db121e6101d8052520f811aa343d4ac",
+  "fixed_head_checkpoint_sha256": "e36239b9f79cad630f7b7210b07f4b9a054332e08b5acf8be6f1da545ca2af98",
+  "label_names": [
+    "arxiv cs na",
+    "arxiv cs mm",
+    "arxiv cs lo",
+    "arxiv cs cy",
+    "arxiv cs cr",
+    "arxiv cs dc",
+    "arxiv cs hc",
+    "arxiv cs ce",
+    "arxiv cs ni",
+    "arxiv cs cc",
+    "arxiv cs ai",
+    "arxiv cs ma",
+    "arxiv cs gl",
+    "arxiv cs ne",
+    "arxiv cs sc",
+    "arxiv cs ar",
+    "arxiv cs cv",
+    "arxiv cs gr",
+    "arxiv cs et",
+    "arxiv cs sy",
+    "arxiv cs cg",
+    "arxiv cs oh",
+    "arxiv cs pl",
+    "arxiv cs se",
+    "arxiv cs lg",
+    "arxiv cs sd",
+    "arxiv cs si",
+    "arxiv cs ro",
+    "arxiv cs it",
+    "arxiv cs pf",
+    "arxiv cs cl",
+    "arxiv cs ir",
+    "arxiv cs ms",
+    "arxiv cs fl",
+    "arxiv cs ds",
+    "arxiv cs os",
+    "arxiv cs gt",
+    "arxiv cs db",
+    "arxiv cs dl",
+    "arxiv cs dm"
+  ]
+}

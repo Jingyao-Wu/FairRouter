@@ -90,7 +90,6 @@ def _predict_pair(estimator, x):
     return np.mean(scores, axis=0)
 
 def fit_candidate(cfg, head, banks, target):
-    original._slurm()
     if head not in ('trust', 'preference') or target not in original.DATASETS:
         raise ValueError('Joint experiment supports disagreement heads only')
     if set(banks) != set(original.DATASETS):
@@ -169,6 +168,5 @@ def fit_candidate(cfg, head, banks, target):
     return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=head_ids, fit_audit=audit)
 
 def predict_candidate(model, bank):
-    original._slurm()
     x = historical.raw_features(bank, model['mode'])
     return np.asarray(_predict_pair(model['estimator'], model['transform'].apply(x))[:, int(model['head'] == 'preference')], float)

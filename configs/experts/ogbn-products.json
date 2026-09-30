@@ -1,0 +1,233 @@
+{
+  "dataset": "ogbn-products",
+  "graph_sha256": "f94a8af93298fd954b1d7e2d47a1651b99060e1393ec0c90bb25ce18417e0ee9",
+  "ssl": {
+    "align_weight": 0.5,
+    "edge_drop_rate": 0.1,
+    "edge_loss_weight": 0.2,
+    "embedding_dim": 128,
+    "feature_loss_weight": 1.0,
+    "feature_mask_rate": 0.3,
+    "gnn_dropout": 0.3,
+    "gnn_hidden_dim": 128,
+    "gnn_layers": 2,
+    "grad_clip": 5.0,
+    "log_every": 20,
+    "max_pos_edges": 50000,
+    "reconstruct_masked_only": true,
+    "seed": 42,
+    "ssl_epochs": 200,
+    "ssl_lr": 0.001,
+    "ssl_weight_decay": 0.0001,
+    "threads": 8,
+    "variance_weight": 0.05,
+    "view_edge_drop_rate": 0.3,
+    "view_feature_mask_rate": 0.3
+  },
+  "heads": [
+    {
+      "shot": 10,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": true
+    },
+    {
+      "shot": 5,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 384,
+        "lr": 0.001,
+        "name": "h384_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    }
+  ],
+  "encoder_checkpoint_sha256": "f820fd21d176b00bfc91e02189defb352426297a45636838c3d92362c59c7bf1",
+  "fixed_head_checkpoint_sha256": "102c976ffbea4ebe470a71cc59a00ea61bdb701282d3344e2e5a367eeb120ebd",
+  "label_names": [
+    "Home & Kitchen",
+    "Health & Personal Care",
+    "Beauty",
+    "Sports & Outdoors",
+    "Books",
+    "Patio, Lawn & Garden",
+    "Toys & Games",
+    "CDs & Vinyl",
+    "Cell Phones & Accessories",
+    "Grocery & Gourmet Food",
+    "Arts, Crafts & Sewing",
+    "Clothing, Shoes & Jewelry",
+    "Electronics",
+    "Movies & TV",
+    "Software",
+    "Video Games",
+    "Automotive",
+    "Pet Supplies",
+    "Office Products",
+    "Industrial & Scientific",
+    "Musical Instruments",
+    "Tools & Home Improvement",
+    "Magazine Subscriptions",
+    "Baby Products",
+    "label 25",
+    "Appliances",
+    "Kitchen & Dining",
+    "Collectibles & Fine Art",
+    "All Beauty",
+    "Luxury Beauty",
+    "Amazon Fashion",
+    "Computers",
+    "All Electronics",
+    "Purchase Circles",
+    "MP3 Players & Accessories",
+    "Gift Cards",
+    "Office & School Supplies",
+    "Home Improvement",
+    "Camera & Photo",
+    "GPS & Navigation",
+    "Digital Music",
+    "Car Electronics",
+    "Baby",
+    "Kindle Store",
+    "Buy a Kindle",
+    "Furniture & D&#233;cor",
+    "#508510"
+  ]
+}

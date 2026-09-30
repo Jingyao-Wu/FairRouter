@@ -107,7 +107,6 @@ def _predict_estimator(model, x):
     return np.mean(scores, axis=0)
 
 def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
-    original._slurm()
     if cfg.get('family') == 'joint_shared':
         from .joint_engine import fit_candidate as fit_joint
         return fit_joint(cfg, head, banks, target)
@@ -162,7 +161,6 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
     return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=fitids, fit_audit=audit)
 
 def predict_candidate(model, bank) -> np.ndarray:
-    original._slurm()
     if model['estimator'].get('kind') == 'joint_shared':
         from .joint_engine import predict_candidate as predict_joint
         return predict_joint(model, bank)

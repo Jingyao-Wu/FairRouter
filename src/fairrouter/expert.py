@@ -11,13 +11,12 @@ import time
 import torch
 
 from eargtc.utils import set_seed
-from .artifacts import Bundle, DATASETS, SHOTS, SEEDS, require_slurm, save_tensor, seal, sha256
+from .artifacts import Bundle, DATASETS, SHOTS, SEEDS, save_tensor, seal, sha256
 from .expert_head import HeadTrial, train_head
 from .frontend import Frontend
 
 
 def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
-    require_slurm()
     if not torch.cuda.is_available():
         raise RuntimeError(
             "GCN head training requires a CUDA GPU"
@@ -61,7 +60,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
                 historical_anchor_replayed=True,
                 test_truth_loaded=False,
                 bundle_manifest_sha256=sha256(Path(bundle_root) / "manifest.json"),
-                slurm_job_id=os.environ["SLURM_JOB_ID"],
+                slurm_job_id=os.environ.get("SLURM_JOB_ID"),
             ),
         )
         print("EXPERT ANCHOR", shot, seed, dataset, flush=True)
@@ -103,7 +102,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
             seconds=time.monotonic() - start,
             cuda_device=torch.cuda.get_device_name(),
             bundle_manifest_sha256=sha256(Path(bundle_root) / "manifest.json"),
-            slurm_job_id=os.environ["SLURM_JOB_ID"],
+            slurm_job_id=os.environ.get("SLURM_JOB_ID"),
         ),
     )
     print(

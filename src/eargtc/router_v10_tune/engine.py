@@ -2,7 +2,6 @@
 from copy import deepcopy
 import hashlib
 import json
-import os
 
 import numpy as np
 from scipy.special import logit
@@ -14,11 +13,6 @@ DATASETS = ('cora', 'citeseer', 'pubmed', 'arxiv', 'ogbn-products')
 HEADS = ('agreement', 'trust', 'preference')
 STAGES = ('regularization', 'transfer', 'training')
 SEEDS = [42, 137, 2026]
-
-
-def _slurm():
-    if not os.environ.get('SLURM_JOB_ID'):
-        raise RuntimeError('Numerical router fitting/prediction requires Slurm')
 
 
 def _model_config(base, head):
@@ -359,7 +353,6 @@ def _predict_estimator(estimator, x):
 
 
 def fit_candidate(cfg, head, banks, target):
-    _slurm()
     if head not in HEADS or target not in DATASETS or set(banks) != set(DATASETS):
         raise ValueError('Routing requires a valid head, target and five training datasets')
     cfg = deepcopy(cfg); family = cfg.get('family')
@@ -445,7 +438,6 @@ def fit_candidate(cfg, head, banks, target):
 
 
 def predict_candidate(model, bank):
-    _slurm()
     if not isinstance(model, dict) or model.get('version') != 'Router-v10-tune':
         raise ValueError('Unknown serialized router model schema')
     x = historical.raw_features(bank, model['mode'])

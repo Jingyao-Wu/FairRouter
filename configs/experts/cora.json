@@ -1,0 +1,193 @@
+{
+  "dataset": "cora",
+  "graph_sha256": "38e29c03bd0498e420e0267b4d59166e1453bc733c2e734c06cc71c0b22e0d14",
+  "ssl": {
+    "align_weight": 0.5,
+    "edge_drop_rate": 0.1,
+    "edge_loss_weight": 0.2,
+    "embedding_dim": 128,
+    "feature_loss_weight": 1.0,
+    "feature_mask_rate": 0.3,
+    "gnn_dropout": 0.3,
+    "gnn_hidden_dim": 128,
+    "gnn_layers": 2,
+    "grad_clip": 5.0,
+    "log_every": 20,
+    "max_pos_edges": 50000,
+    "reconstruct_masked_only": true,
+    "seed": 42,
+    "ssl_epochs": 200,
+    "ssl_lr": 0.001,
+    "ssl_weight_decay": 0.0001,
+    "threads": 8,
+    "variance_weight": 0.05,
+    "view_edge_drop_rate": 0.3,
+    "view_feature_mask_rate": 0.3
+  },
+  "heads": [
+    {
+      "shot": 10,
+      "seed": 42,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 43,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 44,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 42,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 43,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 44,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 42,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": true
+    },
+    {
+      "shot": 5,
+      "seed": 43,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 44,
+      "model_seed": 47,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 512,
+        "lr": 0.001,
+        "name": "h512_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    }
+  ],
+  "encoder_checkpoint_sha256": "40f63e0bb43894cb2dc8abf6945bf65a7b298590faf1b7d5c28b5165f77236d0",
+  "fixed_head_checkpoint_sha256": "0cb26f73fd2a0de851492373c38b9bb2fadf0fbf3f0a55e92033d69ad8c68f08",
+  "label_names": [
+    "Rule_Learning",
+    "Neural_Networks",
+    "Case_Based",
+    "Genetic_Algorithms",
+    "Theory",
+    "Reinforcement_Learning",
+    "Probabilistic_Methods"
+  ]
+}

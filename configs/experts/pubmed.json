@@ -1,0 +1,189 @@
+{
+  "dataset": "pubmed",
+  "graph_sha256": "80794003c735974e9c2ed4fe8dd984d6f25f5f653da5a59ec087a81ec478529b",
+  "ssl": {
+    "align_weight": 0.5,
+    "edge_drop_rate": 0.1,
+    "edge_loss_weight": 0.2,
+    "embedding_dim": 128,
+    "feature_loss_weight": 1.0,
+    "feature_mask_rate": 0.3,
+    "gnn_dropout": 0.3,
+    "gnn_hidden_dim": 128,
+    "gnn_layers": 2,
+    "grad_clip": 5.0,
+    "log_every": 20,
+    "max_pos_edges": 50000,
+    "reconstruct_masked_only": true,
+    "seed": 42,
+    "ssl_epochs": 200,
+    "ssl_lr": 0.001,
+    "ssl_weight_decay": 0.0001,
+    "threads": 8,
+    "variance_weight": 0.05,
+    "view_edge_drop_rate": 0.3,
+    "view_feature_mask_rate": 0.3
+  },
+  "heads": [
+    {
+      "shot": 10,
+      "seed": 42,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 43,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 44,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 42,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 43,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 44,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 42,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": true
+    },
+    {
+      "shot": 5,
+      "seed": 43,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 44,
+      "model_seed": 43,
+      "head_trial": {
+        "class_weight": "none",
+        "dropout": 0.3,
+        "epochs": 1000,
+        "head_hidden_dim": 128,
+        "lr": 0.0005,
+        "name": "h128_lr5e4_val_acc",
+        "patience": 200,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    }
+  ],
+  "encoder_checkpoint_sha256": "0d78a2d455509f1bb20bb63452779bc9f061d3a866b4df38efa164265acc3576",
+  "fixed_head_checkpoint_sha256": "4f4d3dc99fc738570e075286e00abd4ea4b5b89bcd7f4d8f3eb59fcf6ff6c6ab",
+  "label_names": [
+    "Experimental",
+    "Diabetes Mellitus Type 1",
+    "Diabetes Mellitus Type 2"
+  ]
+}

@@ -60,8 +60,6 @@ def predict(model, f, h, ids, batch=2048, repair=False):
 
 
 def train(f, s, p, h, config, seed):
-    if not os.environ.get("SLURM_JOB_ID"):
-        raise RuntimeError("Training requires Slurm")
     cfg = {**DEFAULTS, **config}
     if set(cfg) != set(DEFAULTS):
         raise ValueError("Unknown configuration fields")
@@ -207,5 +205,5 @@ def train(f, s, p, h, config, seed):
         parameter_count=sum(v.numel() for v in model.parameters()),
         train_seconds=time.monotonic() - start,
         test_truth_loaded=False,
-        slurm_job_id=os.environ["SLURM_JOB_ID"],
+        slurm_job_id=os.environ.get("SLURM_JOB_ID"),
     )

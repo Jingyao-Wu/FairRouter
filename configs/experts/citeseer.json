@@ -1,0 +1,192 @@
+{
+  "dataset": "citeseer",
+  "graph_sha256": "bce7cc76def4a43dd8a3abc03a10791c782ffe498bfb4f66b7f0dfe59af0f672",
+  "ssl": {
+    "align_weight": 0.5,
+    "edge_drop_rate": 0.1,
+    "edge_loss_weight": 0.2,
+    "embedding_dim": 128,
+    "feature_loss_weight": 1.0,
+    "feature_mask_rate": 0.3,
+    "gnn_dropout": 0.3,
+    "gnn_hidden_dim": 128,
+    "gnn_layers": 2,
+    "grad_clip": 5.0,
+    "log_every": 20,
+    "max_pos_edges": 50000,
+    "reconstruct_masked_only": true,
+    "seed": 42,
+    "ssl_epochs": 200,
+    "ssl_lr": 0.001,
+    "ssl_weight_decay": 0.0001,
+    "threads": 8,
+    "variance_weight": 0.05,
+    "view_edge_drop_rate": 0.3,
+    "view_feature_mask_rate": 0.3
+  },
+  "heads": [
+    {
+      "shot": 10,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 10,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 3,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 42,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": true
+    },
+    {
+      "shot": 5,
+      "seed": 43,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    },
+    {
+      "shot": 5,
+      "seed": 44,
+      "model_seed": 46,
+      "head_trial": {
+        "class_weight": "balanced",
+        "dropout": 0.3,
+        "epochs": 800,
+        "head_hidden_dim": 256,
+        "lr": 0.001,
+        "name": "h256_balanced_val_acc",
+        "patience": 150,
+        "select_by": "val_acc",
+        "weight_decay": 0.0001
+      },
+      "fixed_head": false
+    }
+  ],
+  "encoder_checkpoint_sha256": "e36c7b52adf199ae67840890b8730e14aa4749ae5a21726c29864a453ebfe8b0",
+  "fixed_head_checkpoint_sha256": "1f113f8c451b745783adf3dbbae60ffec2e175334b66dfe95a0edf1b7c827ace",
+  "label_names": [
+    "Agents",
+    "ML (Machine Learning)",
+    "IR (Information Retrieval)",
+    "DB (Databases)",
+    "HCI (Human-Computer Interaction)",
+    "AI (Artificial Intelligence)"
+  ]
+}
