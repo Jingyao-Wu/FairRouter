@@ -1,0 +1,49 @@
+# Local datasets, model artifacts and generated experiments
+/data/
+/outputs/
+/dist/
+/build/
+*.egg-info/
+*.pt
+*.pth
+*.joblib
+*.safetensors
+*.partial
+
+# Runtime caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Local credentials, logs and editor settings
+.env
+.env.*
+!.env.example
+*.log
+slurm-*.out
+.vscode/
+.idea/
+.DS_Store
+
+# Generated reports and archives
+/results/
+*.pdf
+
+# Paper and method figure included in the repository
+/paper/*
+!/paper/Whether_to_Trust_GNNs_or_LLMs.pdf
+!/paper/FairRouter_framework.pdf
+!/paper/FairRouter_framework.png
+*.tar
+*.tar.sha256
+*.tar.gz
+*.tar.gz.sha256
+*.tar.zst
+*.zip
+*.whl
+
+# Generated split files; retain the checksum manifest
+/splits/*
+!/splits/SHA256SUMS

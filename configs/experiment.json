@@ -1,0 +1,16 @@
+{
+  "release": "FairRouter-1.0.0",
+  "router": "Quality-Aware Fair Routing",
+  "joint": "Multi-modal Residual Classifier",
+  "datasets": ["cora", "citeseer", "pubmed", "arxiv", "ogbn-products"],
+  "shots": [3, 5, 10],
+  "seeds": [42, 43, 44],
+  "evaluation": "1,000 ordered evaluation nodes per dataset and seed, shared across label budgets",
+  "aggregation": "mean and population SD across three seeds",
+  "ddof": 0,
+  "training_truth": "support only",
+  "checkpoint_selection": "accuracy, then negative log-likelihood, on the checkpoint-selection validation subset",
+  "query_truth": "final evaluation only during execution of the supplied runner",
+  "numerical_execution": "Slurm",
+  "threads": {"torch": 2, "OMP_NUM_THREADS": 2, "MKL_NUM_THREADS": 2, "OPENBLAS_NUM_THREADS": 1}
+}

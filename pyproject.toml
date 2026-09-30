@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fairrouter"
+version = "1.0.0.post1"
+description = "FairRouter for few-shot node classification on text-attributed graphs"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = ["numpy==2.4.4", "scipy==1.17.1", "scikit-learn==1.9.0", "joblib==1.5.3", "torch==2.6.0", "threadpoolctl==3.6.0"]
+
+[project.scripts]
+fairrouter = "fairrouter.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+splits = ["torch-geometric==2.8.0"]

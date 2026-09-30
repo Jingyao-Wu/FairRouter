@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "version": "1.0.0.post1",
+  "historical_manifest_sha256": "b0287156198782987545448d070d706d52d89c306a27fba26aabc3845ea88ca5",
+  "algorithm_changed": false,
+  "records": [
+    {
+      "original_sha256": "4d417a5f27774496b7f39a9ad97a476f8357e0546bf049a6da67c08cdca3d483",
+      "anonymous_sha256": "be05f61aff9273be96e9f5d6f44aa0173d11393f9061eccb5d56c6c2b7a873b4",
+      "path": "objects/be05f61aff9273be96e9f5d6f44aa0173d11393f9061eccb5d56c6c2b7a873b4.pt",
+      "dataset": "citeseer",
+      "size_bytes": 26127320,
+      "changed_fields": [
+        "metadata.source_shards"
+      ],
+      "tensors_exact": true,
+      "other_metadata_exact": true
+    },
+    {
+      "original_sha256": "862ca94ecfe516b3d85bd2cbe41003bdbc158111973943d3f3d3d9dc0983d1d9",
+      "anonymous_sha256": "467975ce80fe419ae1d756083c79e09f0dff59615fd3fb222d1feddf340f5818",
+      "path": "objects/467975ce80fe419ae1d756083c79e09f0dff59615fd3fb222d1feddf340f5818.pt",
+      "dataset": "arxiv",
+      "size_bytes": 1388615448,
+      "changed_fields": [
+        "metadata.source_shards"
+      ],
+      "tensors_exact": true,
+      "other_metadata_exact": true
+    },
+    {
+      "original_sha256": "883e9c220d07f2716235ba5f587ba66c1105cdeb2564c3e0f964695ab3611227",
+      "anonymous_sha256": "0d569028edc36a24cea0dd355185500c02d3ca8424b25bdd1059ed47d0021ae8",
+      "path": "objects/0d569028edc36a24cea0dd355185500c02d3ca8424b25bdd1059ed47d0021ae8.pt",
+      "dataset": "pubmed",
+      "size_bytes": 161681752,
+      "changed_fields": [
+        "metadata.source_shards"
+      ],
+      "tensors_exact": true,
+      "other_metadata_exact": true
+    },
+    {
+      "original_sha256": "aa66ccb6363856e379ab93c46da022f9885a195d52f67399eeb449d85aadaaf8",
+      "anonymous_sha256": "d133e433786110ef5f8e3592cf8369da5e9ae8959f546b875e9023a10a7e0f32",
+      "path": "objects/d133e433786110ef5f8e3592cf8369da5e9ae8959f546b875e9023a10a7e0f32.pt",
+      "dataset": "ogbn-products",
+      "size_bytes": 443007512,
+      "changed_fields": [
+        "metadata.source_shards"
+      ],
+      "tensors_exact": true,
+      "other_metadata_exact": true
+    },
+    {
+      "original_sha256": "ac0e11c1c5b76819a96f6aeec84f601ed83618a676dfe0898dfce6dc240f6a1d",
+      "anonymous_sha256": "c22bb34091813e6a8c19394bc555494102a79a27b4d43aa4734c73dfbb364936",
+      "path": "objects/c22bb34091813e6a8c19394bc555494102a79a27b4d43aa4734c73dfbb364936.pt",
+      "dataset": "cora",
+      "size_bytes": 22207704,
+      "changed_fields": [
+        "metadata.source_shards"
+      ],
+      "tensors_exact": true,
+      "other_metadata_exact": true
+    }
+  ],
+  "slurm_job_id": "110553"
+}

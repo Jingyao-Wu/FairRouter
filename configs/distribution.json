@@ -1,0 +1,12 @@
+{
+  "archive": "fairrouter-artifacts-v1-anonymous.tar",
+  "sha256": "d2df9e0591022d34739e9fc06d0424247904380210dd52dad062fe753b6d5ba0",
+  "size_bytes": 24400885760,
+  "content": [
+    "frozen",
+    "frontend"
+  ],
+  "hosting_url": null,
+  "distribution": "separate artifact download; hosting URL pending",
+  "metadata_replacements": "configs/anonymization.json"
+}
