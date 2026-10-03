@@ -2,8 +2,6 @@
 
 Code for **Whether to Trust GNNs or LLMs? FairRouter for Few-Shot Node Classification**.
 
-[Paper](paper/Whether_to_Trust_GNNs_or_LLMs.pdf) · [Method figure](paper/FairRouter_framework.pdf)
-
 ## Overview
 
 FairRouter combines graph structure and node text for few-shot node classification on text-attributed graphs. It uses two frozen experts, a GNN and an LLM, in two stages:
