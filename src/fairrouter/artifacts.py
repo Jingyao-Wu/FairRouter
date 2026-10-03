@@ -3,7 +3,8 @@
 import hashlib
 import json
 
-from .privacy import ANONYMIZED_OBJECTS
+from .object_redirects import OBJECT_REDIRECTS
+from .compatibility import canonical_split
 from pathlib import Path
 
 DATASETS = ("cora", "citeseer", "pubmed", "arxiv", "ogbn-products")
@@ -143,9 +144,9 @@ class Bundle:
         record = self.manifest["objects"][digest]
         if record["sha256"] != digest:
             raise ValueError("Object identity differs")
-        if digest in ANONYMIZED_OBJECTS:
-            # Resolve anonymous metadata copies through the fixed object mapping.
-            replacement = ANONYMIZED_OBJECTS[digest]
+        if digest in OBJECT_REDIRECTS:
+            # Resolve normalized metadata copies through the fixed object mapping.
+            replacement = OBJECT_REDIRECTS[digest]
             return self.authenticated(f"objects/{replacement}.pt", replacement)
         return self.authenticated(record["path"], digest)
 
@@ -164,8 +165,12 @@ class Bundle:
         return torch.load(path, weights_only=True, map_location="cpu", mmap=True)
 
     def split(self, cell):
-        split = read_json(self.authenticated(cell["split"], cell["split_sha256"]))
+        split = canonical_split(read_json(self.authenticated(cell["split"], cell["split_sha256"])))
         check_split(split, cell)
+        reference = self.cell(10, cell["seed"], cell["dataset"])
+        standard = read_json(self.authenticated(reference["split"], reference["split_sha256"]))
+        if split["standard_eval_ids"] != standard["standard_eval_ids"]:
+            raise ValueError("Evaluation IDs and their order must match across label budgets")
         return split
 
     def cell(self, shot, seed, dataset):

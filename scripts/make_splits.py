@@ -134,7 +134,6 @@ def sample_partition(
     query = new_test_mask.nonzero().squeeze(-1).cpu().tolist()
     if len(query) < 1000:
         raise ValueError("The query partition must contain at least 1000 nodes")
-    evaluation = random.sample(query, 1000)
     return {
         "dataset": dataset,
         "shots": shots,
@@ -144,9 +143,6 @@ def sample_partition(
         "support_ids": support,
         "valid_ids": valid,
         "unlabeled_ids": query,
-        "evaluation_full_ids": query,
-        "evaluation_1000_ids": evaluation,
-        "evaluation_test_ids": evaluation,
         "test_truth_exported": False,
     }
 
@@ -237,7 +233,7 @@ def main() -> None:
                 )
                 for shots in sorted(set(args.shots) | {10})
             }
-            standard = partitions[10]["evaluation_1000_ids"]
+            standard = random.Random(seed).sample(partitions[10]["unlabeled_ids"], 1000)
             for shots in args.shots:
                 split = partitions[shots]
                 split["standard_eval_ids"] = standard

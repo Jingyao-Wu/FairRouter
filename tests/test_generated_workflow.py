@@ -87,8 +87,6 @@ class ReconstructionTests(unittest.TestCase):
             valid_ids=[2, 3, 4, 5],
             unlabeled_ids=list(range(6, 1006)),
             test_truth_exported=False,
-            evaluation_full_ids=list(range(6, 1006)),
-            evaluation_1000_ids=list(range(6, 1006)),
             standard_eval_ids=list(range(6, 1006)),
         )
         validate_split(split, 1006)

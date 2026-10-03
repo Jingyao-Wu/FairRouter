@@ -8,8 +8,8 @@ import time
 import torch
 from threadpoolctl import threadpool_limits
 
-from eargtc.multiseed_joint.experiment import prepare_arrays
-from eargtc.joint_cross_repair.artifacts import validate_hidden
+from eargtc.residual_data.experiment import prepare_arrays
+from eargtc.validation.artifacts import validate_hidden
 from . import training
 from .artifacts import Bundle, save_tensor, seal, sha256, write_json
 from .router import replay
@@ -32,7 +32,7 @@ def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, exp
     # Use one thread for routing and two for residual training.
     torch.set_num_threads(1)
     with threadpool_limits(limits=1):
-        router, audit, models = replay(
+        router, diagnostics, models = replay(
             artifacts, cell, values["upstream"], refit=mode == "refit-all"
         )
     torch.set_num_threads(2)
@@ -59,8 +59,8 @@ def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, exp
     validation = training.predict(model, f, hidden, s["selection_ids"])
     torch.testing.assert_close(validation, reference["validation_probability"], atol=0, rtol=0)
     probability = training.predict(model, f, hidden, f["node_ids"])
-    historical = artifacts.tensor(cell["inputs"]["predictions"])
-    torch.testing.assert_close(probability, historical["probability"], atol=0, rtol=0)
+    reference_predictions = artifacts.tensor(cell["inputs"]["predictions"])
+    torch.testing.assert_close(probability, reference_predictions["probability"], atol=0, rtol=0)
     save_tensor(
         destination / "predictions.pt", dict(node_ids=f["node_ids"], probability=probability)
     )
@@ -83,7 +83,7 @@ def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, exp
         reconstructed_banks_used=bank_root is not None,
         refitted_experts_used=expert_root is not None,
         router_refit=mode == "refit-all",
-        router_audit=audit,
+        router_diagnostics=diagnostics,
         checkpoint=member["checkpoints"]["accuracy"],
         config=cell["config"],
         pool_counts={k: len(v) for k, v in pools.items()},
@@ -95,6 +95,6 @@ def run_cell(bundle_root, output, shot, seed, dataset, mode, bank_root=None, exp
         python_version=platform.python_version(),
         slurm_job_id=os.environ.get("SLURM_JOB_ID"),
     )
-    write_json(destination / "audit.json", report)
+    write_json(destination / "diagnostics.json", report)
     seal(destination, report)
     print("FROZEN", dataset, shot, seed, mode, round(report["seconds"], 1), flush=True)

@@ -108,7 +108,7 @@ def evaluate_run(bundle_root, run_root, output, reference_path=None, expert_root
     for cell in artifacts.manifest["cells"]:
         shot, seed, dataset = cell["shot"], cell["seed"], cell["dataset"]
         split = artifacts.split(cell)
-        standard = artifacts.split(artifacts.cell(10, seed, dataset))["evaluation_1000_ids"]
+        standard = artifacts.split(artifacts.cell(10, seed, dataset))["standard_eval_ids"]
         if split["standard_eval_ids"] != standard:
             raise ValueError("Cross-shot standard node IDs/order differ")
         record = artifacts.manifest["evaluation"][f"{dataset}/{seed}"]

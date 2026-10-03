@@ -1,8 +1,8 @@
 """Joint trust and preference training with task-specific supervision."""
 from copy import deepcopy
 import numpy as np
-from eargtc.router_aug_search import v7_engine as original
-from eargtc.router_v8_v7_explore import core_v2 as historical
+from eargtc.estimators import tabular as original
+from eargtc.feature_transforms import core as reference
 
 def _network(inputs, width):
     from torch import nn
@@ -117,7 +117,7 @@ def fit_candidate(cfg, head, banks, target):
         n = len(state)
         if not n:
             continue
-        x = historical.raw_features(bank, cfg['mode'])
+        x = reference.raw_features(bank, cfg['mode'])
         decisive = state != 2
         mass = 0.25 if dataset == target else 0.75 / 4
         arrays.append(x)
@@ -138,7 +138,7 @@ def fit_candidate(cfg, head, banks, target):
     if head == 'preference' and (not np.any(state != 2)):
         raise ValueError('No decisive training observations for preference')
     trust_weights *= len(x) / trust_weights.sum()
-    transform = historical.Transform.fit(x, trust_weights, False)
+    transform = reference.Transform.fit(x, trust_weights, False)
     xx = transform.apply(x)
     cfg['target_domain'] = len(ordered) - 1
     plan = _plan(state, domains, cfg)
@@ -164,9 +164,9 @@ def fit_candidate(cfg, head, banks, target):
         loss_parents[h] = {d: np.asarray(parent_ids[d])[active[h][rows]].tolist() for d, rows in offsets.items()}
     head_ids = preference_ids if head == 'preference' else sample_ids
     head_parents = preference_parents if head == 'preference' else parent_ids
-    audit = dict(fit_sample_ids=deepcopy(head_ids), fit_parent_ids=deepcopy(head_parents), shared_fit_sample_ids=sample_ids, shared_fit_parent_ids=parent_ids, trust_loss_sample_ids=loss_ids['trust'], trust_loss_parent_ids=loss_parents['trust'], preference_loss_sample_ids=loss_ids['preference'], preference_loss_parent_ids=loss_parents['preference'], transform_fit_sample_ids=deepcopy(sample_ids), transform_fit_parent_ids=deepcopy(parent_ids), raw_feature_sample_ids=deepcopy(sample_ids), normalization_fit_sample_ids=deepcopy(head_ids), normalization_fit_parent_ids=deepcopy(head_parents), domain_masses=masses, fit_rows=int(eligible.sum()), shared_fit_rows=len(state), target_domain=cfg['target_domain'], stages=[{k: v for k, v in s.items() if k != 'eligible'} for s in plan], validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, environment_features=False, view_weights='all unit; configured per-head domain masses retained', preference_sampling='decisive only, domain mass divided by decisive count', neither='trust BCE and shared trunk through trust only; zero preference BCE gradient', shared_transform='all training disagreement rows; no validation or query inputs', early_stopping=False)
-    return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=head_ids, fit_audit=audit)
+    diagnostics = dict(fit_sample_ids=deepcopy(head_ids), fit_parent_ids=deepcopy(head_parents), shared_fit_sample_ids=sample_ids, shared_fit_parent_ids=parent_ids, trust_loss_sample_ids=loss_ids['trust'], trust_loss_parent_ids=loss_parents['trust'], preference_loss_sample_ids=loss_ids['preference'], preference_loss_parent_ids=loss_parents['preference'], transform_fit_sample_ids=deepcopy(sample_ids), transform_fit_parent_ids=deepcopy(parent_ids), raw_feature_sample_ids=deepcopy(sample_ids), normalization_fit_sample_ids=deepcopy(head_ids), normalization_fit_parent_ids=deepcopy(head_parents), domain_masses=masses, fit_rows=int(eligible.sum()), shared_fit_rows=len(state), target_domain=cfg['target_domain'], stages=[{k: v for k, v in s.items() if k != 'eligible'} for s in plan], validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, environment_features=False, view_weights='all unit; configured per-head domain masses retained', preference_sampling='decisive only, domain mass divided by decisive count', neither='trust BCE and shared trunk through trust only; zero preference BCE gradient', shared_transform='all training disagreement rows; no validation or query inputs', early_stopping=False)
+    return dict(version='tabular_router', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=head_ids, fit_diagnostics=diagnostics)
 
 def predict_candidate(model, bank):
-    x = historical.raw_features(bank, model['mode'])
+    x = reference.raw_features(bank, model['mode'])
     return np.asarray(_predict_pair(model['estimator'], model['transform'].apply(x))[:, int(model['head'] == 'preference')], float)

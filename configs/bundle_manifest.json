@@ -19,7 +19,7 @@
       "seed": 42,
       "dataset": "arxiv",
       "split": "splits/10/42/arxiv.json",
-      "split_sha256": "80a907adc5b4075ca9ff4c837fc9f49171c90805a8ad0bfebc96c14766013006",
+      "split_sha256": "5580eb1f52232a2e1c2a7c3784d654d5b1b770671b92c45c33a2740f50f172f2",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -63,7 +63,7 @@
       "seed": 42,
       "dataset": "citeseer",
       "split": "splits/10/42/citeseer.json",
-      "split_sha256": "dac52a31c4474db73abccd8a56863be8f24f14f2161171d0a84f6de113bf1a9a",
+      "split_sha256": "59e667ff21358b6f598b473941295a3bf2b0e9a57a65af05f5a30667d221d7d7",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -107,7 +107,7 @@
       "seed": 42,
       "dataset": "cora",
       "split": "splits/10/42/cora.json",
-      "split_sha256": "a30c8724c69ac380b702d66ab9cd2422f1d5b4a9f1561d16550e9bdc80bf58e1",
+      "split_sha256": "bf844455b9ff9f487f01eb18eff4e8acebbdda6c09e9333fc1749d4d728876f0",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -151,7 +151,7 @@
       "seed": 42,
       "dataset": "ogbn-products",
       "split": "splits/10/42/ogbn-products.json",
-      "split_sha256": "2299be7f1e77135c0f35e14cade8fc5a99f6e857531d75892bc3f2007436f167",
+      "split_sha256": "6e5505b783eb158cdf61bc6349a3e36beae94570aa64028d929193294d0c9353",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -195,7 +195,7 @@
       "seed": 42,
       "dataset": "pubmed",
       "split": "splits/10/42/pubmed.json",
-      "split_sha256": "ebfe3b9e3b729378a9609f4f5ec4eeadaa48062472754d11b8a6ecddf2216cb9",
+      "split_sha256": "0ea50054691827ccf1056724fcff5dea2fb3a200f242950c4306b02c40ae0640",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -239,7 +239,7 @@
       "seed": 43,
       "dataset": "arxiv",
       "split": "splits/10/43/arxiv.json",
-      "split_sha256": "1fe04408ce28ca95ca6853ef07415f314c580cfc385bd47e08d7c51ed50b3047",
+      "split_sha256": "86953d89c05bbd97bae0d38d2ca15037e50abb03ccd70d6eb3cabce053a15f07",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -283,7 +283,7 @@
       "seed": 43,
       "dataset": "citeseer",
       "split": "splits/10/43/citeseer.json",
-      "split_sha256": "08dfe28f63e0208b7dd50344cd5abdd90ca841638da3050ef17fbfb44b110ee0",
+      "split_sha256": "1cc70970e0e3e69074ba413f425a1a25e54d903e5cc95577d084a5aa273525a7",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -327,7 +327,7 @@
       "seed": 43,
       "dataset": "cora",
       "split": "splits/10/43/cora.json",
-      "split_sha256": "84983ea16095972749cdcacb5b5004337733ef04694a4df0fd545ad1b851b9ef",
+      "split_sha256": "ac7f9ea875fd96e3d6b261cbd47dcf917c22219d99b6cb65ded12ea55b6264bf",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -371,7 +371,7 @@
       "seed": 43,
       "dataset": "ogbn-products",
       "split": "splits/10/43/ogbn-products.json",
-      "split_sha256": "5c8f70acdf269db61e8b8c9c3940e6a83cfa5c92c68b18b5ec1d6d6f500c4615",
+      "split_sha256": "759414c0291c50aabea12943c9a0dcc168cec36273b98b6e191ac691dfee3061",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -415,7 +415,7 @@
       "seed": 43,
       "dataset": "pubmed",
       "split": "splits/10/43/pubmed.json",
-      "split_sha256": "3acbdb2c648f8852991e0a91beb1ee06cd14f8ff11d2bb0ec9ddcd91d9185230",
+      "split_sha256": "b90c4c1e65424a5337e9cf24b5fdb7a8ea522364d7a47de10a5a33b8ce7b93f8",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -459,7 +459,7 @@
       "seed": 44,
       "dataset": "arxiv",
       "split": "splits/10/44/arxiv.json",
-      "split_sha256": "1740bfee3385d8595245f04dbc403d63becca03b326514944aa67a0b6128f44d",
+      "split_sha256": "d592c01cb05dce442cac991a31feee33df4155b42c7691cb55a098a2bb6ac6a7",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -503,7 +503,7 @@
       "seed": 44,
       "dataset": "citeseer",
       "split": "splits/10/44/citeseer.json",
-      "split_sha256": "2412c8df4ba4365aa66cfed63dc8843e86ce8b532206f9fd486c19514de6039d",
+      "split_sha256": "f0729c0227f135eec1a6f15c7aae6141ff651aafea2bc47bdbe3884890653864",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -547,7 +547,7 @@
       "seed": 44,
       "dataset": "cora",
       "split": "splits/10/44/cora.json",
-      "split_sha256": "ee63b9d9ff61729ada047e3415a3ad65f51805dd1efdbcaf7f57e56100d740f6",
+      "split_sha256": "c7ed52ed93d4345b23615908e64d26be44ebeb14fc3ac03e03b2ff98628d9774",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -591,7 +591,7 @@
       "seed": 44,
       "dataset": "ogbn-products",
       "split": "splits/10/44/ogbn-products.json",
-      "split_sha256": "bc5a010b28eed91ffca84249523fd128af8d7bedac8c5dc9dca827a71d53a91a",
+      "split_sha256": "b82eeee2ebcc0a0b32f861a9d89583bbd32816732af42559055692c7c3f8a729",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -635,7 +635,7 @@
       "seed": 44,
       "dataset": "pubmed",
       "split": "splits/10/44/pubmed.json",
-      "split_sha256": "935b5cb019a28747bde9e3c314122fd1b654273a449987794095a5d26ffab60e",
+      "split_sha256": "f20dfa811596b614368b3f21f4a9aac4fa63602e28184fe50612b43da6f3de10",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -679,7 +679,7 @@
       "seed": 42,
       "dataset": "arxiv",
       "split": "splits/3/42/arxiv.json",
-      "split_sha256": "df7d6452a97a34857179f4da7f014407f993af2728a6126918bfc43115edd759",
+      "split_sha256": "ecbe40c8e4beea06ce05d989684606d4a5b161f818437e6c189290cdd6059a56",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -723,7 +723,7 @@
       "seed": 42,
       "dataset": "citeseer",
       "split": "splits/3/42/citeseer.json",
-      "split_sha256": "61444989647bb38363258362db035c93f8df7fb24760924ee266759571740968",
+      "split_sha256": "b7e1b0cf51ba26e7fcc298355a15e047750df1b52f8917d0cb79640a519065c9",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -767,7 +767,7 @@
       "seed": 42,
       "dataset": "cora",
       "split": "splits/3/42/cora.json",
-      "split_sha256": "e008c1af39d6a4e2cd884209bc34406cd52505d2c3153a31c74f44bed047216a",
+      "split_sha256": "6df3d45085cacadea54e7b982e4422f40f95b0dabe7ea1d29db7f6b024a5c09d",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -811,7 +811,7 @@
       "seed": 42,
       "dataset": "ogbn-products",
       "split": "splits/3/42/ogbn-products.json",
-      "split_sha256": "caf8e45bb61187351a4778f9d5626ba05e289d23b921957e440092569608d5c5",
+      "split_sha256": "94fc7bd98cbe3cd9282d491d5f4f924b79b83f08ec2e841e08074d7e8686040c",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -855,7 +855,7 @@
       "seed": 42,
       "dataset": "pubmed",
       "split": "splits/3/42/pubmed.json",
-      "split_sha256": "666435c0c20567908f0cb2c93ec8716e5b03d8c20a5e6dee93f500c38cca4e20",
+      "split_sha256": "14102b40f82fd24919f9eb6007ef6af096f9c37d52193547ab86da4fdddbe2ba",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -899,7 +899,7 @@
       "seed": 43,
       "dataset": "arxiv",
       "split": "splits/3/43/arxiv.json",
-      "split_sha256": "af99239a5899854ec182cdc2094873feb9fb809cda3af4cd83069122afa35701",
+      "split_sha256": "9604d3fe84e67fe8a58434dbe857382b51d00b4196a9a0fa56ef914e13cd1c2f",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -943,7 +943,7 @@
       "seed": 43,
       "dataset": "citeseer",
       "split": "splits/3/43/citeseer.json",
-      "split_sha256": "d5c5bbf05d1b771541472e6380c4c90ea6b91533512b48812d1b19a8baba91ab",
+      "split_sha256": "5fc0c2b4345fff3dca0c1a50a0550c9a3e61f074b6ff4ab4d8af5f36c2b856e2",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -987,7 +987,7 @@
       "seed": 43,
       "dataset": "cora",
       "split": "splits/3/43/cora.json",
-      "split_sha256": "e61b7b4a9bacf1b9a40eababe83905acfda2854058280c09e5e77f5a2d61b70b",
+      "split_sha256": "458008891e3be0293e413dbe184e96db7308253076979f4899e5f9de3b2f92c6",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1031,7 +1031,7 @@
       "seed": 43,
       "dataset": "ogbn-products",
       "split": "splits/3/43/ogbn-products.json",
-      "split_sha256": "94d6ab5dd1ba3562c9092dd508de374c8e458c6e084c1c6608471b7517429180",
+      "split_sha256": "05cad572dd78b8807c51c1699c70b72fb8266bdf3e769a129657ac932997431b",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -1075,7 +1075,7 @@
       "seed": 43,
       "dataset": "pubmed",
       "split": "splits/3/43/pubmed.json",
-      "split_sha256": "ead32c2f8777147d3534485e14263471c61bf6fdda0af94988efd3207b5befe3",
+      "split_sha256": "2b59774973b5aff792ee1692b04291ff136509dedef2ceb866a895bfdaf1575d",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -1119,7 +1119,7 @@
       "seed": 44,
       "dataset": "arxiv",
       "split": "splits/3/44/arxiv.json",
-      "split_sha256": "b8c053571be45bc342c1b91a4dc10d35b2e1f7758bfa1ffa1d6eabe471854813",
+      "split_sha256": "aa81f912056df362f605cb844a44ef36c755418e4f46b8ab3deee0ca4d6fabce",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -1163,7 +1163,7 @@
       "seed": 44,
       "dataset": "citeseer",
       "split": "splits/3/44/citeseer.json",
-      "split_sha256": "9099fdbb59a66e7ec117cf490ec4a339337e840d16c5eeb4b92aeedd43a3e787",
+      "split_sha256": "0a53eb80f1d4fe39708fd2a2bb9981ef3b97add1a74ee6e058b72991fbaaa81f",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1207,7 +1207,7 @@
       "seed": 44,
       "dataset": "cora",
       "split": "splits/3/44/cora.json",
-      "split_sha256": "acc05b4992f1d302667bd04ac31425caf70c11c60e77ac56aa1cfe2a1b25a2de",
+      "split_sha256": "b4458437c3ab6aef9c801b3352c40aad07154ba6f19f496f7315b290e6128f6c",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1251,7 +1251,7 @@
       "seed": 44,
       "dataset": "ogbn-products",
       "split": "splits/3/44/ogbn-products.json",
-      "split_sha256": "f1fc28a39102ac5d07c86d82a8d5f06d40c99231f1d615ad5a0da601ea782b2f",
+      "split_sha256": "38a7c602db37e908c5ca3c4041733448bc7a368414688616c94c73726656c23b",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1295,7 +1295,7 @@
       "seed": 44,
       "dataset": "pubmed",
       "split": "splits/3/44/pubmed.json",
-      "split_sha256": "3c531427d436ee8718ba3626381bc79c50caaaa42f78e17ce2aa12ad6db55c7d",
+      "split_sha256": "c0df3b65688e374d4ac5946364e1f91a8760d161d8446bd69ae27743331052b1",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1339,7 +1339,7 @@
       "seed": 42,
       "dataset": "arxiv",
       "split": "splits/5/42/arxiv.json",
-      "split_sha256": "a7d76520fcd83e130ffa578013a385eed83f9c05a1f0545a52523308e775868f",
+      "split_sha256": "df7e30228b9777e8937566110a5d2f21c368891d0a4aa44e8bafc8122bbf0484",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -1383,7 +1383,7 @@
       "seed": 42,
       "dataset": "citeseer",
       "split": "splits/5/42/citeseer.json",
-      "split_sha256": "43cbcba986a592cd8c0339e90bc9b1a4036a82f39f7a2137b90b208a90762791",
+      "split_sha256": "fda627d556a3ae8616fa547945726af136a7f134c255a54acc53bd3b9b4cedd5",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1427,7 +1427,7 @@
       "seed": 42,
       "dataset": "cora",
       "split": "splits/5/42/cora.json",
-      "split_sha256": "1ac6e592a09931d1f585441ccfad7cb5ce1d69305919f9577bf9eaec54c29a94",
+      "split_sha256": "2aa58458e43fef681ac00f6544edeff58ef6bc735336fbb932a9c3501adc214e",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1471,7 +1471,7 @@
       "seed": 42,
       "dataset": "ogbn-products",
       "split": "splits/5/42/ogbn-products.json",
-      "split_sha256": "0516174a4e72053dae0afbded199387f44f5acac71a5f8d4cf95050676fbbe1f",
+      "split_sha256": "a62c557412e3ed9a59a6c683c322080a68f89f0887fe62c9f491191e202e9919",
       "config": {
         "aux": 0.3,
         "batch_size": 64,
@@ -1515,7 +1515,7 @@
       "seed": 42,
       "dataset": "pubmed",
       "split": "splits/5/42/pubmed.json",
-      "split_sha256": "303034b6b8f1e1dc71661d732a990f46ac65cab0e73c686c2dca7eede3238ebf",
+      "split_sha256": "1b6a1b8ea7017399e4f0244c4ce1e8201db5ee360c4e1a9bf0b23b578a980372",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1559,7 +1559,7 @@
       "seed": 43,
       "dataset": "arxiv",
       "split": "splits/5/43/arxiv.json",
-      "split_sha256": "9981839e2fe99c7c2ff31e38668f299244b3b88b5126f77e8a76895998427d8f",
+      "split_sha256": "11b64ba9321d798f3160c9f714abc5cfcf85844c5ccb3cba01843373f39f7773",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -1603,7 +1603,7 @@
       "seed": 43,
       "dataset": "citeseer",
       "split": "splits/5/43/citeseer.json",
-      "split_sha256": "2209302ce36c0a6847b1ff565cdc6d7d193334616cd5da86be361973ce3f8847",
+      "split_sha256": "1a0bac63d9b282bbccfd441a040cb0c880a661db58a8055888877791b0c60e11",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1647,7 +1647,7 @@
       "seed": 43,
       "dataset": "cora",
       "split": "splits/5/43/cora.json",
-      "split_sha256": "ad22e6acb0630291d124c9f5eefe65a3d83ff8c7e4fb45899fe8fbe594cec511",
+      "split_sha256": "628c0cb86a0c888590e30aae3018865ca5e155d5e1644a5cc0f30735b33297b9",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1691,7 +1691,7 @@
       "seed": 43,
       "dataset": "ogbn-products",
       "split": "splits/5/43/ogbn-products.json",
-      "split_sha256": "1ae60c097ef1b3999fc3fcfccde7eb73d913c7fc51803b215a445f3cfa83f21b",
+      "split_sha256": "5925d73ae17bcfbf18a53bc1bbe429e3a1dabc5fe6e71c068bee4c30e098b693",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -1735,7 +1735,7 @@
       "seed": 43,
       "dataset": "pubmed",
       "split": "splits/5/43/pubmed.json",
-      "split_sha256": "7225e84bd37ec7f8177d48cfc82645e0f867f12c85d73a5dd995e9be0d15f4a4",
+      "split_sha256": "2f883d56ae6746e52f6502370523317583eb121dff13921f753b266b2cc1148e",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1779,7 +1779,7 @@
       "seed": 44,
       "dataset": "arxiv",
       "split": "splits/5/44/arxiv.json",
-      "split_sha256": "ddc0f3e2e39dc93aca2463816d5840030a50bf0052feabee88bbc80ed8940c41",
+      "split_sha256": "0fd86ddecb6bf23cdbf29b0741543772cc119cdd215a0d1dbae78e48b0a1595c",
       "config": {
         "aux": 0.1,
         "batch_size": 64,
@@ -1823,7 +1823,7 @@
       "seed": 44,
       "dataset": "citeseer",
       "split": "splits/5/44/citeseer.json",
-      "split_sha256": "d3d93f71a8bd9d13ad2790b9a1e696a0c830788b8d8e53fb1d074381a3f6cbc2",
+      "split_sha256": "02ab53f61face3edff8bcce61f89e2d2d8a3c172e832641dee6a9891e6a2390b",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1867,7 +1867,7 @@
       "seed": 44,
       "dataset": "cora",
       "split": "splits/5/44/cora.json",
-      "split_sha256": "5a49a35f5f1f8e36940b7b68fc2a944146bee4d11e5fa5b06fbce9ebe53b9da0",
+      "split_sha256": "98afbf1ca70424c4b7db6b0807fb50de159fa5ccc6417894319f96128a81539b",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1911,7 +1911,7 @@
       "seed": 44,
       "dataset": "ogbn-products",
       "split": "splits/5/44/ogbn-products.json",
-      "split_sha256": "1f8ac7de03e4621ab583d2d34f28aee75018635bacc58af24e6a2bc1e02e0e89",
+      "split_sha256": "2ac2d352c691476df4a7fc8ef405dd488bd62018d7a37643d2541e78ef4fac6c",
       "config": {
         "aux": 0.0,
         "batch_size": 64,
@@ -1955,7 +1955,7 @@
       "seed": 44,
       "dataset": "pubmed",
       "split": "splits/5/44/pubmed.json",
-      "split_sha256": "a83940c6f8ff46539d8e54345ac0c6d90ee0290ad8001b69b1483a62ac06fde6",
+      "split_sha256": "713989fb5e88b2496158c11c5a10ddc4dd90696de0d9c0a214bc41fd17bb3091",
       "config": {
         "aux": 0.0,
         "batch_size": 64,

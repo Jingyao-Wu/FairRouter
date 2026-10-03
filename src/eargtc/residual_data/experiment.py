@@ -1,8 +1,8 @@
 """Prepare residual-classifier data for each dataset and split."""
 import torch
-from eargtc.joint_cross_repair.artifacts import validate_features, validate_supervision, validate_pools
-from eargtc.joint_five_router.adapter import build_router_features_and_pools
-from eargtc.router_bc_split_c.calibration import deterministic_calibration_threshold_split
+from eargtc.validation.artifacts import validate_features, validate_supervision, validate_pools
+from eargtc.supervision.adapter import build_router_features_and_pools
+from eargtc.calibration.calibration import deterministic_calibration_threshold_split
 
 def validation_halves(dataset, valid, agreement):
     selection, threshold = ([], [])
@@ -35,11 +35,10 @@ def prepare_arrays(split, upstream, embeddings, safe, router, dataset):
             source = upstream['gnn_logits' if key == 'logp_g' else 'llm_logits']
             if not torch.allclose(value.exp(), source.float().softmax(1), atol=2e-06):
                 raise ValueError('Router auxiliary expert differs from current upstream')
-    ids = {key: torch.tensor(split[key], dtype=torch.long) for key in ('support_ids', 'valid_ids', 'unlabeled_ids', 'evaluation_full_ids', 'evaluation_1000_ids')}
-    if not torch.equal(ids['unlabeled_ids'], ids['evaluation_full_ids']):
-        raise ValueError('full evaluation must use complete query')
-    if len(ids['evaluation_1000_ids'].unique()) != len(ids['evaluation_1000_ids']) or not bool(torch.isin(ids['evaluation_1000_ids'], ids['unlabeled_ids']).all()):
-        raise ValueError('reference evaluation IDs must be unique query subset')
+    ids = {key: torch.tensor(split[key], dtype=torch.long) for key in ('support_ids', 'valid_ids', 'unlabeled_ids', 'standard_eval_ids')}
+    standard = ids['standard_eval_ids']
+    if len(standard) != 1000 or len(standard.unique()) != 1000 or not bool(torch.isin(standard, ids['unlabeled_ids']).all()):
+        raise ValueError('standard evaluation IDs must be 1000 distinct query nodes')
     for key in ('support_ids', 'valid_ids'):
         if not torch.equal(safe[key], ids[key]):
             raise ValueError('safe supervision differs from outer split')

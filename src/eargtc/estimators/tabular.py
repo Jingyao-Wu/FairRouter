@@ -1,7 +1,7 @@
 """Fit routing estimators on equally weighted augmented support views."""
 from copy import deepcopy
 import numpy as np
-from eargtc.router_v8_v7_explore import core_v2 as historical
+from eargtc.feature_transforms import core as reference
 DATASETS = ('cora', 'citeseer', 'pubmed', 'arxiv', 'ogbn-products')
 HEADS = ('agreement', 'trust', 'preference')
 
@@ -10,7 +10,7 @@ def candidate_grid(dataset: str, head: str, stage='original') -> list[dict]:
         raise ValueError((dataset, head))
     if stage != 'original':
         raise ValueError(f'Unknown training stage: {stage}')
-    return deepcopy(historical.candidate_grid())
+    return deepcopy(reference.candidate_grid())
 
 def _check_bank(bank, dataset):
     if bank.get('split') != 'train':
@@ -52,7 +52,7 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
         y = labels[mask] == 0 if head == 'preference' else labels[mask] != 2 if head == 'trust' else labels[mask].astype(bool)
         if not len(y):
             continue
-        xs.append(historical.raw_features(bank, mode)[mask])
+        xs.append(reference.raw_features(bank, mode)[mask])
         ys.append(y)
         ds.append(np.full(len(y), j))
         dataset = bank['dataset']
@@ -66,19 +66,19 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
         raise ValueError('No eligible training rows for requested head')
     x, y, w, domains = map(np.concatenate, (xs, ys, ws, ds))
     w *= len(w) / w.sum()
-    transform = historical.Transform.fit(x, w, cfg['rank'])
+    transform = reference.Transform.fit(x, w, cfg['rank'])
     xx = transform.apply(x)
     cfg['target_domain'] = len(use) - 1 if scope == 'transfer' else -1
-    estimator = historical.fit_estimator(xx, y, w, domains, cfg)
-    train_z = historical.predict_estimator(estimator, xx)
+    estimator = reference.fit_estimator(xx, y, w, domains, cfg)
+    train_z = reference.predict_estimator(estimator, xx)
     center = float(np.average(train_z, weights=w))
     scale = max(float(np.sqrt(np.average((train_z - center) ** 2, weights=w))), 0.1)
-    audit = dict(fit_sample_ids=fitids, fit_parent_ids=parentids, transform_fit_sample_ids=deepcopy(fitids), transform_fit_parent_ids=deepcopy(parentids), raw_feature_sample_ids=featureids, domain_masses=domain_masses, fit_rows=len(y), validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, view_weights='all unit; configured dataset mass retained', environment_features=False, target_domain=cfg['target_domain'], normalization_fit_sample_ids=deepcopy(fitids))
-    return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=mode, center=center, scale=scale, fit_ids=fitids, fit_audit=audit)
+    diagnostics = dict(fit_sample_ids=fitids, fit_parent_ids=parentids, transform_fit_sample_ids=deepcopy(fitids), transform_fit_parent_ids=deepcopy(parentids), raw_feature_sample_ids=featureids, domain_masses=domain_masses, fit_rows=len(y), validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, view_weights='all unit; configured dataset mass retained', environment_features=False, target_domain=cfg['target_domain'], normalization_fit_sample_ids=deepcopy(fitids))
+    return dict(version='tabular_router', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=mode, center=center, scale=scale, fit_ids=fitids, fit_diagnostics=diagnostics)
 
 def predict_candidate(model, bank) -> np.ndarray:
-    x = historical.raw_features(bank, model['mode'])
-    return np.asarray(historical.predict_estimator(model['estimator'], model['transform'].apply(x)), float).reshape(-1)
+    x = reference.raw_features(bank, model['mode'])
+    return np.asarray(reference.predict_estimator(model['estimator'], model['transform'].apply(x)), float).reshape(-1)
 
 def describe_space():
-    return dict(version='Router-v8(v7)', original_source='eargtc/router_v8_v7_explore/core_v2.py', original_candidates=168, stages=['original'], incumbent='fit the configured estimator on augmented support observations', fit_boundary='train only; all six views share unit weight; parent identity retained in audit')
+    return dict(version='tabular_router', original_source='eargtc/feature_transforms/core.py', original_candidates=168, stages=['original'], incumbent='fit the configured estimator on augmented support observations', fit_boundary='train only; all six views share unit weight; parent identity retained in diagnostics')

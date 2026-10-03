@@ -14,10 +14,10 @@ from .artifacts import DATASETS
 
 FEATURE_KEYS = {"dataset", "ids", "tab", "g", "l", "gnn_pred", "llm_pred"}
 ENGINES = {
-    "v6": "eargtc.router_aug_search.v6_engine",
-    "v7": "eargtc.router_aug_search.v7_engine",
-    "expanded": "eargtc.router_aug_search.v7_expanded",
-    "tune": "eargtc.router_v10_tune.engine",
+    "transfer": "eargtc.estimators.transfer",
+    "tabular": "eargtc.estimators.tabular",
+    "ensemble": "eargtc.estimators.ensemble",
+    "adaptation": "eargtc.domain_adaptation.engine",
 }
 
 
@@ -36,7 +36,7 @@ def source_key(config, head, sources, banks):
 
 def engine(name):
     module = importlib.import_module(ENGINES[name])
-    if name == "v6":
+    if name == "transfer":
         module._source_key = source_key
     return module
 
@@ -50,7 +50,7 @@ def raw(wrapped, bank):
     if "gold_normalization" in wrapped:
         norm = wrapped["gold_normalization"]
         return norm["slope"] * value + norm["bias"]
-    if wrapped["engine"] == "v6" and wrapped["model"]["head"] == "agreement":
+    if wrapped["engine"] == "transfer" and wrapped["model"]["head"] == "agreement":
         return logit(np.clip(value, 1e-6, 1 - 1e-6))
     model = wrapped["model"]
     return (value - model["center"]) / model["scale"] if "center" in model else value
@@ -62,7 +62,7 @@ def predict_branch(bundle, bank):
         return dict(
             score=np.zeros(n), route=np.zeros(n, dtype=np.int64), q=np.tile([0.0, 0.0, 1.0], (n, 1))
         )
-    if bundle.get("tuning_schema") != "crossfit_v1":
+    if bundle.get("tuning_schema") != "crossfit":
         if bundle["branch"] == "agreement":
             return dict(score=predict_head(bundle["models"]["agreement"], bank))
         z = {
@@ -112,9 +112,9 @@ def top_mask(scores, ids, fraction):
 
 def load_model(bundle, digest):
     # joblib is trusted pickle: authenticate before deserializing.
-    import joblib
+    from .compatibility import load_estimator
 
-    return joblib.load(bundle.object(digest))
+    return load_estimator(bundle.object(digest))
 
 
 def checked_features(bank, split, role, branch):
@@ -167,7 +167,7 @@ def replay(artifacts, cell, upstream, *, refit=False):
     choose = torch.ones(count, dtype=torch.bool)
     accepted = torch.zeros(count, dtype=torch.bool)
     scores = torch.zeros(count, dtype=torch.float64)
-    audit = []
+    diagnostics = []
     models = {}
     for branch in ("agreement", "disagreement"):
         source = cell["branches"][branch]
@@ -195,7 +195,7 @@ def replay(artifacts, cell, upstream, *, refit=False):
                 accepted[ids] = torch.from_numpy(
                     top_mask(prediction["score"], ids, fitted["policy"]["fraction"])
                 )
-            audit.append(dict(branch=branch, role=role, rows=len(ids), refitted=refit))
+            diagnostics.append(dict(branch=branch, role=role, rows=len(ids), refitted=refit))
     result = dict(
         node_ids=torch.arange(count),
         choose_g=choose,
@@ -214,4 +214,4 @@ def replay(artifacts, cell, upstream, *, refit=False):
                 rtol=0,
                 atol=1e-10 if result[key].dtype == torch.float64 else 0,
             )
-    return result, audit, models
+    return result, diagnostics, models

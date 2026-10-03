@@ -4,7 +4,7 @@ from sklearn.ensemble import ExtraTreesClassifier, HistGradientBoostingClassifie
 import sklearn
 from sklearn.linear_model import LogisticRegression
 from scipy.special import logit
-from eargtc.router_v8_exploration.core import array, binary_target
+from eargtc.targets.core import array, binary_target
 PROBABILITY_INDICES = list(range(16)) + list(range(27, 43)) + list(range(54, 63))
 
 def _uses_sources(cfg):
@@ -14,13 +14,13 @@ def fit_tabular(banks, head, cfg):
     """All supervised selection/scaling sees exclusively supplied training rows."""
     if not _uses_sources(cfg) and len(banks) != 1:
         raise ValueError('target-only tabular candidate requires exactly one target training bank')
-    xs, ys, audits = ([], [], {})
+    xs, ys, records = ([], [], {})
     for bank in banks:
         mask, y = binary_target(bank['state'], head)
         xs.append(np.asarray(array(bank['tab']), dtype=float)[mask])
         ys.append(y)
         domain = bank.get('dataset', bank.get('domain', 'unknown'))
-        audits[domain] = array(bank['ids'])[mask].tolist()
+        records[domain] = array(bank['ids'])[mask].tolist()
     x = np.concatenate(xs)
     y = np.concatenate(ys)
     active = sum((bool(len(v)) for v in ys))
@@ -35,7 +35,7 @@ def fit_tabular(banks, head, cfg):
     elif cfg['feature_mode'] == 'top16':
         correlations = np.abs(scaled.T @ (weights * (y - np.average(y, weights=weights)))) if len(y) else np.zeros(70)
         indices = np.lexsort((np.arange(70), -correlations))[:16]
-    fitted = dict(kind=cfg['kind'], head=head, config=cfg, mean=mean, scale=scale, indices=indices, sklearn_version=sklearn.__version__, training_audit=dict(training_ids=audits, feature_fit_ids=audits, seed=42, domain_loss_mass={name: 1 / active for name, values in audits.items() if values}, sample_weight_sum=float(weights.sum()), normalization='equal-domain supervised rows'))
+    fitted = dict(kind=cfg['kind'], head=head, config=cfg, mean=mean, scale=scale, indices=indices, sklearn_version=sklearn.__version__, training_diagnostics=dict(training_ids=records, feature_fit_ids=records, seed=42, domain_loss_mass={name: 1 / active for name, values in records.items() if values}, sample_weight_sum=float(weights.sum()), normalization='equal-domain supervised rows'))
     if len(np.unique(y)) < 2:
         fitted['constant_logit'] = float(logit((y.sum() + 0.5) / (len(y) + 1)))
     elif cfg['kind'] == 'ridge':

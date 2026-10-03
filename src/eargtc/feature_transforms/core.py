@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.special import expit, logit
 from sklearn.metrics import roc_auc_score
-from eargtc.router_v8_v6.core import guard_ids, exact_mask, precision_profile
+from eargtc.selection.core import guard_ids, exact_mask, precision_profile
 
 def check_train(bank, metadata):
     guard_ids(bank['dataset'], np.asarray(bank['ids']).tolist(), bank['split'], metadata)

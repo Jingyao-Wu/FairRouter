@@ -1,6 +1,6 @@
 import torch
-from eargtc.router_v8.evidence import probability_evidence, structural_evidence
-from eargtc.router_v8.prototypes import prototype_evidence
+from eargtc.evidence.evidence import probability_evidence, structural_evidence
+from eargtc.evidence.prototypes import prototype_evidence
 
 
 def build70(pg, pl, ids, edge, full_pred, embedding, fitted, n, c):

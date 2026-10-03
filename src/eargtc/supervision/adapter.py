@@ -1,7 +1,7 @@
 """Build residual-classifier inputs and pseudo-label supervision pools."""
 from __future__ import annotations
 import torch
-from eargtc.joint_cross_repair.artifacts import validate_features
+from eargtc.validation.artifacts import validate_features
 
 def _tensor(value, *, dtype, name: str) -> torch.Tensor:
     result = torch.as_tensor(value, dtype=dtype).detach().cpu().contiguous().view(-1)

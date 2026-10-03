@@ -42,7 +42,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
     if destination.exists():
         raise FileExistsError("Use a new expert output directory")
     destination.mkdir(parents=True)
-    if source["historical_seed42_head_replayed"]:
+    if source["reference_seed42_head_replayed"]:
         # Reuse the supplied expert when this split specifies a fixed head.
         save_tensor(destination / "upstream.pt", original)
         seal(
@@ -57,7 +57,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
                 max_abs_error=0.0,
                 same_all_node_predictions=True,
                 refitted=False,
-                historical_anchor_replayed=True,
+                reference_anchor_replayed=True,
                 test_truth_loaded=False,
                 bundle_manifest_sha256=sha256(Path(bundle_root) / "manifest.json"),
                 slurm_job_id=os.environ.get("SLURM_JOB_ID"),
@@ -94,7 +94,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
             trial=source["head_trial"],
             stats=stats,
             refitted=True,
-            historical_anchor_replayed=False,
+            reference_anchor_replayed=False,
             exact_logits=exact,
             max_abs_error=max_error,
             same_all_node_predictions=predictions_equal,
@@ -118,7 +118,7 @@ def refit_expert(bundle_root, frontend_root, output, shot, seed, dataset):
     )
     if not exact:
         raise RuntimeError(
-            "Expert logits differ; inspect the audit. The frozen benchmark input was not replaced."
+            "Expert logits differ; inspect the diagnostics. The frozen benchmark input was not replaced."
         )
 
 

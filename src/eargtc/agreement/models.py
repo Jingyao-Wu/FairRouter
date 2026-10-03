@@ -216,7 +216,7 @@ def _fit_mlp(config: dict[str, Any], arrays: dict[str, np.ndarray], y: np.ndarra
         torch.nn.utils.clip_grad_norm_(network.parameters(), 5.0)
         optimizer.step()
         final_loss = float(loss.detach().cpu())
-    return {'kind': 'mlp', 'family': 'mlp', 'config': copy.deepcopy(config), 'transform': transform, 'state_dict': {key: value.detach().cpu().clone() for key, value in network.state_dict().items()}, 'training_audit': {'seed': int(seed), 'training_rows': count, 'sample_weight_sum': float(weight.sum()), 'sampling': 'sample_weight_probability_with_replacement', 'sample_probability_sum': float(sample_probability.sum()), 'steps': steps, 'batch_size': batch_size, 'final_loss': final_loss, 'transform_fit': 'training_rows_only', 'inference_device': 'cpu'}}
+    return {'kind': 'mlp', 'family': 'mlp', 'config': copy.deepcopy(config), 'transform': transform, 'state_dict': {key: value.detach().cpu().clone() for key, value in network.state_dict().items()}, 'training_diagnostics': {'seed': int(seed), 'training_rows': count, 'sample_weight_sum': float(weight.sum()), 'sampling': 'sample_weight_probability_with_replacement', 'sample_probability_sum': float(sample_probability.sum()), 'steps': steps, 'batch_size': batch_size, 'final_loss': final_loss, 'transform_fit': 'training_rows_only', 'inference_device': 'cpu'}}
 
 def _predict_mlp(model: dict[str, Any], arrays: dict[str, np.ndarray]) -> np.ndarray:
     device = torch.device('cpu')
@@ -249,7 +249,7 @@ def fit_predict(config: dict[str, Any], train: dict[str, Any], y: Any, predict: 
     effective = target[weight > 0]
     if np.unique(effective).size < 2:
         probability = float((np.dot(weight, target) + 0.5) / (weight.sum() + 1.0))
-        model = {'kind': 'constant', 'family': family, 'config': config, 'probability': probability, 'training_audit': {'seed': int(seed), 'training_rows': len(target), 'sample_weight_sum': float(weight.sum()), 'transform_fit': 'not_required_single_class'}}
+        model = {'kind': 'constant', 'family': family, 'config': config, 'probability': probability, 'training_diagnostics': {'seed': int(seed), 'training_rows': len(target), 'sample_weight_sum': float(weight.sum()), 'transform_fit': 'not_required_single_class'}}
         return (predict_model(model, prediction), model)
     if family == 'mlp':
         model = _fit_mlp(config, training, target, weight, int(seed), device)
@@ -269,7 +269,7 @@ def fit_predict(config: dict[str, Any], train: dict[str, Any], y: Any, predict: 
     else:
         estimator = HistGradientBoostingClassifier(max_iter=int(config['max_iter']), learning_rate=float(config['learning_rate']), max_depth=int(config['max_depth']), l2_regularization=float(config['l2_regularization']), min_samples_leaf=int(config['min_samples_leaf']), early_stopping=False, random_state=int(seed))
     estimator.fit(x, labels, sample_weight=weight)
-    model = {'kind': 'sklearn', 'family': family, 'config': config, 'transform': transform, 'estimator': estimator, 'predict_batch_size': int(config.get('predict_batch_size', _PREDICT_BATCH_SIZE)), 'training_audit': {'seed': int(seed), 'training_rows': len(target), 'sample_weight_sum': float(weight.sum()), 'transform_fit': 'training_rows_only_weighted'}}
+    model = {'kind': 'sklearn', 'family': family, 'config': config, 'transform': transform, 'estimator': estimator, 'predict_batch_size': int(config.get('predict_batch_size', _PREDICT_BATCH_SIZE)), 'training_diagnostics': {'seed': int(seed), 'training_rows': len(target), 'sample_weight_sum': float(weight.sum()), 'transform_fit': 'training_rows_only_weighted'}}
     return (predict_model(model, prediction), model)
 
 def predict_model(model: dict[str, Any], inputs: dict[str, Any]) -> np.ndarray:

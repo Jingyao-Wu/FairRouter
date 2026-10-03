@@ -3,6 +3,7 @@
 import torch
 
 from .artifacts import check_split, read_json, sha256
+from .compatibility import canonical_split
 
 
 def load_graph(path):
@@ -52,16 +53,11 @@ def validate_split(split, n):
         split,
         dict(shot=split["shots"], seed=split["split_seed"], dataset=split["dataset"]),
     )
-    if split["evaluation_full_ids"] != split["unlabeled_ids"]:
-        raise ValueError("Full evaluation must use the complete query partition")
-    own = split["evaluation_1000_ids"]
-    if len(own) != 1000 or len(set(own)) != 1000 or not set(own) <= groups[2]:
-        raise ValueError("Own evaluation must contain 1000 distinct query nodes")
 
 
 def graph_split(graph_path, split_path):
     x, edge, y = load_graph(graph_path)
-    split = read_json(split_path)
+    split = canonical_split(read_json(split_path))
     validate_split(split, len(x))
     digest = sha256(graph_path)
     if split["graph_sha256"] != digest:

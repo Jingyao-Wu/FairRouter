@@ -3,7 +3,7 @@
 import math
 from collections.abc import Iterable
 import torch
-from eargtc.router_v7.perturbations import mixed_assignment as mixed_assignment
+from eargtc.perturbations.assignment import mixed_assignment as mixed_assignment
 
 
 def _severity(value: float) -> float:

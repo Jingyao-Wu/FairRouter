@@ -10,9 +10,9 @@ from pathlib import Path
 import torch
 
 from eargtc.models.gnn import MLPHead
-from eargtc.router_augmentation_v8.data import ENVIRONMENTS, organize
-from eargtc.router_v7.perturbations import mixed_assignment
-from eargtc.router_v8.prototypes import fit_class_prototypes
+from eargtc.augmentation.data import ENVIRONMENTS, organize
+from eargtc.perturbations.assignment import mixed_assignment
+from eargtc.evidence.prototypes import fit_class_prototypes
 from .artifacts import (
     Bundle,
     DATASETS,
@@ -24,12 +24,13 @@ from .artifacts import (
     sha256,
 )
 from .features import build70
+from .compatibility import normalize_metadata
 
 
 class Frontend:
     def __init__(self, root):
         self.root = Path(root).resolve()
-        self.manifest = read_json(self.root / "frontend_manifest.json")
+        self.manifest = normalize_metadata(read_json(self.root / "frontend_manifest.json"))
         self.checked = set()
 
     def tensor(self, digest):

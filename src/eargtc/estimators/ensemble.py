@@ -2,8 +2,8 @@
 from copy import deepcopy
 import numpy as np
 from scipy.special import logit
-from eargtc.router_aug_search import v7_engine as original
-from eargtc.router_v8_v7_explore import core_v2 as historical
+from eargtc.estimators import tabular as original
+from eargtc.feature_transforms import core as reference
 
 def _network(width, cfg):
     import torch.nn as nn
@@ -74,7 +74,7 @@ def _fit_estimator(x, y, w, domains, cfg):
         return dict(kind='constant', logit=float(logit((y.sum() + 0.5) / (len(y) + 1))))
     family = cfg['family']
     if family in ('lr', 'trees', 'mlp'):
-        return historical.fit_estimator(x, y, w, domains, cfg)
+        return reference.fit_estimator(x, y, w, domains, cfg)
     if family in ('neural', 'residual'):
         return _fit_neural(x, y, w, domains, cfg)
     if family == 'hgb':
@@ -90,7 +90,7 @@ def _fit_estimator(x, y, w, domains, cfg):
 
 def _predict_estimator(model, x):
     if model['kind'] != 'expanded_neural':
-        return historical.predict_estimator(model, x)
+        return reference.predict_estimator(model, x)
     import torch
     if not len(x):
         return np.empty(0, float)
@@ -108,7 +108,7 @@ def _predict_estimator(model, x):
 
 def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
     if cfg.get('family') == 'joint_shared':
-        from .joint_engine import fit_candidate as fit_joint
+        from .joint import fit_candidate as fit_joint
         return fit_joint(cfg, head, banks, target)
     if 'stage' not in cfg or cfg.get('stage') == 'original':
         return original.fit_candidate(cfg, head, banks, target)
@@ -136,7 +136,7 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
         y = labels[mask] == 0 if head == 'preference' else labels[mask] != 2 if head == 'trust' else labels[mask].astype(bool)
         if not len(y):
             continue
-        xs.append(historical.raw_features(bank, cfg['mode'])[mask])
+        xs.append(reference.raw_features(bank, cfg['mode'])[mask])
         ys.append(y)
         ds.append(np.full(len(y), j))
         dataset = bank['dataset']
@@ -150,19 +150,19 @@ def fit_candidate(cfg, head, banks: dict, target: str) -> dict:
         raise ValueError('No eligible training rows for requested head')
     x, y, w, domains = map(np.concatenate, (xs, ys, ws, ds))
     w *= len(w) / w.sum()
-    transform = historical.Transform.fit(x, w, cfg['rank'])
+    transform = reference.Transform.fit(x, w, cfg['rank'])
     xx = transform.apply(x)
     cfg['target_domain'] = len(use) - 1 if scope == 'transfer' else -1
     estimator = _fit_estimator(xx, y, w, domains, cfg)
     train_z = _predict_estimator(estimator, xx)
     center = float(np.average(train_z, weights=w))
     scale = max(float(np.sqrt(np.average((train_z - center) ** 2, weights=w))), 0.1)
-    audit = dict(fit_sample_ids=fitids, fit_parent_ids=parentids, transform_fit_sample_ids=deepcopy(fitids), transform_fit_parent_ids=deepcopy(parentids), raw_feature_sample_ids=featureids, normalization_fit_sample_ids=deepcopy(fitids), domain_masses=domain_masses, fit_rows=len(y), target_domain=cfg['target_domain'], validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, environment_features=False, view_weights='all unit; configured dataset mass retained', early_stopping=False)
-    return dict(version='Router-v8(v7)', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=fitids, fit_audit=audit)
+    diagnostics = dict(fit_sample_ids=fitids, fit_parent_ids=parentids, transform_fit_sample_ids=deepcopy(fitids), transform_fit_parent_ids=deepcopy(parentids), raw_feature_sample_ids=featureids, normalization_fit_sample_ids=deepcopy(fitids), domain_masses=domain_masses, fit_rows=len(y), target_domain=cfg['target_domain'], validation_training_rows=0, query_training_rows=0, validation_loss_evaluations=0, environment_features=False, view_weights='all unit; configured dataset mass retained', early_stopping=False)
+    return dict(version='tabular_router', head=head, target=target, config=cfg, transform=transform, estimator=estimator, mode=cfg['mode'], center=center, scale=scale, fit_ids=fitids, fit_diagnostics=diagnostics)
 
 def predict_candidate(model, bank) -> np.ndarray:
     if model['estimator'].get('kind') == 'joint_shared':
-        from .joint_engine import predict_candidate as predict_joint
+        from .joint import predict_candidate as predict_joint
         return predict_joint(model, bank)
-    x = historical.raw_features(bank, model['mode'])
+    x = reference.raw_features(bank, model['mode'])
     return np.asarray(_predict_estimator(model['estimator'], model['transform'].apply(x)), float).reshape(-1)

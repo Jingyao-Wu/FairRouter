@@ -59,7 +59,7 @@ def _parent_ids(ids_by_dataset, banks):
         result[dataset] = [int(mapping[int(i)]) for i in ids]
     return result
 
-def _audit(stages, banks, *, mass=None):
+def _diagnostics(stages, banks, *, mass=None):
     """Union source and adaptation parameter IDs; retain true transform scope."""
     input_ids, supervised, transforms = ({}, {}, {})
     for stage in stages:
@@ -99,7 +99,7 @@ def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> 
             raise ValueError('Unlabeled consistency is outside the augmented training protocol')
         if any((d not in prepared for d in sources)):
             raise ValueError('Neural source training requires all other datasets')
-        from eargtc.router_v8_gold_training.model import fit_head
+        from eargtc.neural.model import fit_head
         cache_key = _source_key(cfg, head, sources, banks)
         cache_hit = cache_key in _SOURCE_CACHE
         if cache_hit:
@@ -111,12 +111,12 @@ def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> 
                 _SOURCE_CACHE.popitem(last=False)
         fitted = copy.deepcopy(_SOURCE_CACHE[cache_key])
         fitted['config'] = copy.deepcopy(cfg)
-        stages = [fitted['training_audit']]
+        stages = [fitted['training_diagnostics']]
         if cfg['target_steps']:
             fitted = fit_head([prepared[target]], head, cfg, device='cpu', initial=fitted, steps=cfg['target_steps'], unlabeled=[])
-            stages.append(fitted['training_audit'])
-        audit = _audit(stages, banks)
-        audit.update(source_cache_hit=cache_hit, source_cache_key=cache_key)
+            stages.append(fitted['training_diagnostics'])
+        diagnostics = _diagnostics(stages, banks)
+        diagnostics.update(source_cache_hit=cache_hit, source_cache_key=cache_key)
     else:
         if scope not in ('source', 'pooled', 'target'):
             raise ValueError('Training scope must be source, pooled or target')
@@ -125,7 +125,7 @@ def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> 
             raise ValueError('Missing source training dataset')
         if head == 'agreement':
             import numpy as np
-            from eargtc.agreement_increment.models import fit_predict
+            from eargtc.agreement.models import fit_predict
             selected = [d for d in selected if len(prepared[d]['ids'])]
             if not selected:
                 raise ValueError('Agreement recipe has no training observations')
@@ -138,30 +138,30 @@ def fit_candidate(cfg: dict, head: str, banks: dict[str, dict], target: str) -> 
             ids = {d: prepared[d]['ids'].tolist() for d in selected}
             supervised = {} if fitted['kind'] == 'baseline' else ids
             transform_ids = {} if fitted['kind'] in ('baseline', 'constant') else ids
-            stage = dict(fitted.get('training_audit', {}), input_ids=ids, supervised_ids=supervised, transform_fit_ids=transform_ids, domain_loss_mass=mass)
-            audit = _audit([stage], banks, mass=mass)
+            stage = dict(fitted.get('training_diagnostics', {}), input_ids=ids, supervised_ids=supervised, transform_fit_ids=transform_ids, domain_loss_mass=mass)
+            diagnostics = _diagnostics([stage], banks, mass=mass)
         else:
-            from eargtc.router_v8_learned.experiment import fit_tabular
+            from eargtc.tabular.experiment import fit_tabular
             fitted = fit_tabular([prepared[d] for d in selected], head, cfg)
-            stage = dict(fitted['training_audit'], input_ids={d: prepared[d]['ids'].tolist() for d in selected})
-            audit = _audit([stage], banks)
-    return dict(schema='router_aug_v6_candidate_v1', version='v6', head=head, target=target, config=cfg, fitted=fitted, training_audit=audit)
+            stage = dict(fitted['training_diagnostics'], input_ids={d: prepared[d]['ids'].tolist() for d in selected})
+            diagnostics = _diagnostics([stage], banks)
+    return dict(schema='transfer_candidate', version='transfer', head=head, target=target, config=cfg, fitted=fitted, training_diagnostics=diagnostics)
 
 def predict_candidate(model: dict, bank: dict):
     """Return raw disagreement logits or original agreement probability scores."""
     import numpy as np
-    if model.get('schema') != 'router_aug_v6_candidate_v1':
+    if model.get('schema') != 'transfer_candidate':
         raise ValueError('Unknown fitted estimator schema')
     fitted = model['fitted']
     features = {k: bank[k] for k in ('tab', 'g', 'l')}
     if model['head'] == 'agreement':
-        from eargtc.agreement_increment.models import predict_model
+        from eargtc.agreement.models import predict_model
         result = predict_model(fitted, features)
     elif fitted.get('kind', 'neural') == 'neural':
-        from eargtc.router_v8_gold_training.model import predict_head
+        from eargtc.neural.model import predict_head
         result = predict_head(fitted, dict(features, ids=bank['ids']), device='cpu')
     else:
-        from eargtc.router_v8_learned.experiment import predict_tabular
+        from eargtc.tabular.experiment import predict_tabular
         result = predict_tabular(fitted, features)
     result = np.asarray(result, dtype=np.float64)
     if result.shape != (len(bank['ids']),) or not np.isfinite(result).all():

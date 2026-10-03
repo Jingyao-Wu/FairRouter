@@ -6,7 +6,7 @@ import json
 import numpy as np
 from scipy.special import logit
 
-from eargtc.router_v8_v7_explore import core_v2 as historical
+from eargtc.feature_transforms import core as reference
 
 
 DATASETS = ('cora', 'citeseer', 'pubmed', 'arxiv', 'ogbn-products')
@@ -17,13 +17,13 @@ SEEDS = [42, 137, 2026]
 
 def _model_config(base, head):
     """Convert a fitted estimator record into a training configuration."""
-    if not isinstance(base, dict) or base.get('engine') not in ('v6', 'v7', 'expanded', 'tune'):
+    if not isinstance(base, dict) or base.get('engine') not in ('transfer', 'tabular', 'ensemble', 'adaptation'):
         raise ValueError('base must contain a supported fitted routing model')
     model = base.get('model')
     if not isinstance(model, dict):
         raise ValueError('base.model must be a fitted model dictionary')
     cfg = model.get('config')
-    if base['engine'] == 'v6' and isinstance(cfg, dict):
+    if base['engine'] == 'transfer' and isinstance(cfg, dict):
         inner = cfg.get('config') if isinstance(cfg.get('config'), dict) else None
         kind = cfg.get('kind')
         if kind == 'neural':
@@ -47,7 +47,7 @@ def _model_config(base, head):
             seed['C'] = float(cfg.get('C', seed['C']))
             return seed
         return _defaults('lr', 'context', 'pooled')
-    if base['engine'] == 'v6' and (not isinstance(cfg, dict) or cfg.get('family') not in
+    if base['engine'] == 'transfer' and (not isinstance(cfg, dict) or cfg.get('family') not in
                                    ('mlp', 'neural', 'residual', 'joint_shared')):
         return _defaults('lr', 'context', 'pooled')
     if not isinstance(cfg, dict):
@@ -89,7 +89,7 @@ def _identified(rows, stage):
         cfg = deepcopy(cfg)
         cfg['stage'] = stage
         payload = json.dumps(cfg, sort_keys=True, separators=(',', ':'))
-        ident = 'v10_' + stage[:3] + '_' + hashlib.sha1(payload.encode()).hexdigest()[:12]
+        ident = 'candidate_' + stage[:3] + '_' + hashlib.sha1(payload.encode()).hexdigest()[:12]
         if ident in seen:
             continue
         seen.add(ident)
@@ -372,7 +372,7 @@ def fit_candidate(cfg, head, banks, target):
         bank = banks[dataset]; n = len(bank['ids'])
         if n == 0:
             continue
-        x = historical.raw_features(bank, cfg['mode'])
+        x = reference.raw_features(bank, cfg['mode'])
         state = np.asarray(bank['state']) if head != 'agreement' else None
         eligible = state != 2 if head == 'preference' else np.ones(n, bool)
         y = np.asarray(bank['target']).astype(bool) if head == 'agreement' else (state != 2 if head == 'trust' else state == 0)
@@ -388,7 +388,7 @@ def fit_candidate(cfg, head, banks, target):
     x = np.concatenate(raw); state_or_y = np.concatenate(labels); domains = np.concatenate(domains)
     transform_w = np.concatenate(transform_w); fit_w = np.concatenate(fit_w); preference_w = np.concatenate(preference_w)
     transform_mask = np.ones(len(x), bool) if family == 'joint_shared' else fit_w > 0
-    transform = historical.Transform.fit(x[transform_mask], transform_w[transform_mask], bool(cfg.get('rank', False)))
+    transform = reference.Transform.fit(x[transform_mask], transform_w[transform_mask], bool(cfg.get('rank', False)))
     xx = transform.apply(x); cfg['target_domain'] = len(use) - 1 if cfg['scope'] == 'transfer' else -1
     if family == 'joint_shared':
         state = state_or_y.astype(int); decisive = state != 2
@@ -410,7 +410,7 @@ def fit_candidate(cfg, head, banks, target):
     center = float(np.average(z, weights=nw)); scale = max(float(np.sqrt(np.average((z - center) ** 2, weights=nw))), .1)
     transform_ids = raw_ids if family == 'joint_shared' else fit_ids
     transform_parents = raw_parents if family == 'joint_shared' else fit_parents
-    audit = dict(fit_sample_ids=fit_ids, fit_parent_ids=fit_parents,
+    diagnostics = dict(fit_sample_ids=fit_ids, fit_parent_ids=fit_parents,
         shared_fit_sample_ids=deepcopy(raw_ids) if family == 'joint_shared' else None,
         shared_fit_parent_ids=deepcopy(raw_parents) if family == 'joint_shared' else None,
         raw_feature_sample_ids=raw_ids, raw_feature_parent_ids=raw_parents,
@@ -423,24 +423,24 @@ def fit_candidate(cfg, head, banks, target):
         transform_order='raw_features on full branch before decisive projection',
         normalization_source='gold train predictions only', early_stopping=False)
     if family in ('neural', 'joint_shared') and cfg['scope'] == 'transfer':
-        audit['target_mass_effect'] = 'transform and train-score normalization only; source and target stages use separate samplers'
+        diagnostics['target_mass_effect'] = 'transform and train-score normalization only; source and target stages use separate samplers'
     empty_domains = [d for d in use if not len(banks[d]['ids'])]
     if empty_domains:
-        audit['empty_domains_skipped'] = empty_domains
+        diagnostics['empty_domains_skipped'] = empty_domains
         active_mass = sum(masses[d] for d in raw_ids)
-        audit['effective_domain_masses'] = {d: masses[d] / active_mass for d in raw_ids}
-        audit['empty_domain_compatibility'] = 'skip zero rows; preserve original domain indices and requested nonempty masses before native normalization'
-    model = dict(version='Router-v10-tune', config=cfg, head=head, target=target,
+        diagnostics['effective_domain_masses'] = {d: masses[d] / active_mass for d in raw_ids}
+        diagnostics['empty_domain_compatibility'] = 'skip zero rows; preserve original domain indices and requested nonempty masses before native normalization'
+    model = dict(version='domain_adaptation_router', config=cfg, head=head, target=target,
                  transform=transform, estimator=estimator, mode=cfg['mode'], center=center,
-                 scale=scale, fit_audit=audit)
+                 scale=scale, fit_diagnostics=diagnostics)
     if pair_id is not None: model['shared_pair_id'] = pair_id
     return model
 
 
 def predict_candidate(model, bank):
-    if not isinstance(model, dict) or model.get('version') != 'Router-v10-tune':
+    if not isinstance(model, dict) or model.get('version') != 'domain_adaptation_router':
         raise ValueError('Unknown serialized router model schema')
-    x = historical.raw_features(bank, model['mode'])
+    x = reference.raw_features(bank, model['mode'])
     scores = _predict_estimator(model['estimator'], model['transform'].apply(x))
     if model['estimator']['kind'] == 'joint_shared':
         scores = scores[:, int(model['head'] == 'preference')]

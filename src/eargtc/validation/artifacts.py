@@ -67,7 +67,7 @@ def validate_hidden(data, n, expected_width=4096):
     for start in range(0, n, 4096):
         if not bool(torch.isfinite(h[start:start + 4096]).all()):
             raise ValueError('nonfinite raw hidden')
-    from eargtc.router_v7_decision.audit import assert_label_free_cache
+    from eargtc.label_checks.cache import assert_label_free_cache
     assert_label_free_cache(data)
 
 def validate_pools(pools, features, supervision):

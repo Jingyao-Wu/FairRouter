@@ -17,6 +17,9 @@ fairrouter = "fairrouter.__main__:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+fairrouter = ["resources/*.json"]
+
 [project.optional-dependencies]
 splits = ["torch-geometric==2.8.0"]
 experts = ["torch-geometric==2.8.0", "transformers==5.6.0", "accelerate==1.11.0", "safetensors==0.7.0"]

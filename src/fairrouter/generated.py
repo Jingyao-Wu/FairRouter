@@ -8,7 +8,7 @@ from pathlib import Path
 import torch
 
 from eargtc.models.gnn import MLPHead
-from eargtc.router_v7.perturbations import mixed_assignment
+from eargtc.perturbations.assignment import mixed_assignment
 
 from .artifacts import Bundle, read_json, sha256, verify_seal, write_json
 from .frontend import Frontend, positions
@@ -98,8 +98,6 @@ def verify_generated(bundle_root, frontend_root, gnn_root, llm_root):
         "valid_ids",
         "unlabeled_ids",
         "standard_eval_ids",
-        "evaluation_1000_ids",
-        "evaluation_full_ids",
         "test_truth_exported",
     ):
         if generated_split[key] != split[key]:
